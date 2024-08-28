@@ -5,8 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sweep Tracker</title>
     <link rel="stylesheet" href="styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sweep Tracker</title>
+    <link rel="stylesheet" href="styles.css">
     <style>
-        /* Additional styles for responsive header */
+        /* Header styling */
         .header {
             position: fixed;
             top: 0;
@@ -24,43 +28,65 @@
             top: -100px; /* Hide the header when scrolling */
         }
 
-        .menu-icon {
-            display: none;
+        /* Adjust body margin to prevent overlap with fixed header */
+        body {
+            margin-top: 100px; /* Height of the header */
+        }
+
+        /* Big button styling */
+        .big-button {
+            width: 80%;
+            max-width: 300px;
+            margin: 20px auto;
+            padding: 20px;
             font-size: 24px;
+            color: white;
+            background-color: gray;
+            border: none;
+            border-radius: 10px;
             cursor: pointer;
+            text-align: center;
+            display: block;
+        }
+
+        /* Green button state */
+        .big-button.green {
+            background-color: green;
+        }
+
+        /* Container styling */
+        .container {
+            padding: 20px;
+        }
+
+        /* Footer section */
+        .footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background-color: #007bff;
+            padding: 10px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            z-index: 1000;
+        }
+
+        .button {
+            padding: 10px 20px;
+            font-size: 18px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .red-button {
+            background-color: red;
             color: white;
         }
 
-        .navigation-buttons {
-            display: flex;
-            gap: 10px;
-        }
-
-        .header-buttons {
-            display: flex;
-            gap: 10px;
-        }
-
-        @media (max-width: 768px) {
-            .navigation-buttons, .header-buttons {
-                display: none;
-            }
-
-            .menu-icon {
-                display: block;
-            }
-
-            .header.show-menu .navigation-buttons,
-            .header.show-menu .header-buttons {
-                display: flex;
-                flex-direction: column;
-                background-color: #007bff;
-                position: absolute;
-                top: 40px;
-                width: 100%;
-                left: 0;
-                padding: 10px;
-            }
+        .hidden {
+            display: none;
         }
     </style>
 </head>
@@ -68,33 +94,28 @@
     <!-- Header Section with Navigation Buttons -->
     <header class="header" id="mainHeader">
         <div>
-            <span class="menu-icon" id="menuIcon" onclick="toggleMenu()">☰</span>
             <h1>Hedwards Sweeps</h1>
+            <button id="startSweepBtn" class="big-button" onclick="startSweep()">Start Sweep</button>
         </div>
         <div class="navigation-buttons">
             <!-- Hedden Floors -->
-            <button onclick="scrollToSection('hedden-5th-floor')">Hedden 5th Floor</button>
-            <button onclick="scrollToSection('hedden-4th-floor')">Hedden 4th Floor</button>
-            <button onclick="scrollToSection('hedden-3rd-floor')">Hedden 3rd Floor</button>
-            <button onclick="scrollToSection('hedden-2nd-floor')">Hedden 2nd Floor</button>
-            <button onclick="scrollToSection('hedden-1st-floor')">Hedden 1st Floor</button>
-            <button onclick="scrollToSection('hedden-basement')">Hedden Basement</button>
+            <button onclick="scrollToSection('hedden-5th-floor')">H5</button>
+            <button onclick="scrollToSection('hedden-4th-floor')">H4</button>
+            <button onclick="scrollToSection('hedden-3rd-floor')">H3</button>
+            <button onclick="scrollToSection('hedden-2nd-floor')">H2</button>
+            <button onclick="scrollToSection('hedden-1st-floor')">H1</button>
+            <button onclick="scrollToSection('hedden-basement')">HB</button>
 
             <!-- Edwards Floors -->
-            <button onclick="scrollToSection('edwards-3rd-floor')">Edwards 3rd Floor</button>
-            <button onclick="scrollToSection('edwards-2nd-floor')">Edwards 2nd Floor</button>
-            <button onclick="scrollToSection('edwards-1st-floor')">Edwards 1st Floor</button>
-            <button onclick="scrollToSection('edwards-basement')">Edwards Basement</button>
-        </div>
-        <div class="header-buttons">
-            <button id="startSweepBtn" onclick="startSweep()">Start Sweep</button>
-            <button class="clear-button" onclick="clearForm()">Clear Form</button>
+            <button onclick="scrollToSection('edwards-3rd-floor')">E3</button>
+            <button onclick="scrollToSection('edwards-2nd-floor')">E2</button>
+            <button onclick="scrollToSection('edwards-1st-floor')">E1</button>
+            <button onclick="scrollToSection('edwards-basement')">EB</button>
         </div>
     </header>
 
     <!-- Main Content Section -->
     <div class="container" id="floor-container" style="margin-top: 100px;">
-
         <!-- Hedden Floors -->
         <div class="section" id="hedden-5th-floor">
             <h2>Hedden: 5th Floor</h2>
