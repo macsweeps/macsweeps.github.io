@@ -88,6 +88,23 @@
         .hidden {
             display: none;
         }
+
+        /* Overlay to disable site */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 24px;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
@@ -95,7 +112,7 @@
     <header class="header" id="mainHeader">
         <div>
             <h1>Hedwards Sweeps</h1>
-            <button id="startSweepBtn" class="big-button" onclick="startSweep()">Start Sweep</button>
+            <!-- Overlay to lock the site until "Start Sweep" is clicked -->
         </div>
         <div class="navigation-buttons">
             <!-- Hedden Floors -->
@@ -105,23 +122,28 @@
             <button onclick="scrollToSection('hedden-2nd-floor')">H2</button>
             <button onclick="scrollToSection('hedden-1st-floor')">H1</button>
             <button onclick="scrollToSection('hedden-basement')">HB</button>
-
+        </div>
+        <div class="navigation-buttons">
             <!-- Edwards Floors -->
             <button onclick="scrollToSection('edwards-3rd-floor')">E3</button>
             <button onclick="scrollToSection('edwards-2nd-floor')">E2</button>
             <button onclick="scrollToSection('edwards-1st-floor')">E1</button>
             <button onclick="scrollToSection('edwards-basement')">EB</button>
         </div>
+
     </header>
+
+    <div class="overlay" id="overlay">
+        <button id="startSweepBtn" class="big-button" onclick="startSweep()">Start Sweep</button>
+    </div>
 
     <!-- Main Content Section -->
     <div class="container" id="floor-container" style="margin-top: 100px;">
         <!-- Hedden Floors -->
         <div class="section" id="hedden-5th-floor">
-            <h2>Hedden: 5th Floor</h2>
             <!-- North Wing -->
             <div class="wing-section">
-                <h3>North Wing</h3>
+                <h2>5th Floor: North Wing</h2>
                 <div class="section">
                     <p><strong>Is the hallway clear?</strong></p>
                     <button id="clearBtn5thNorthHedden" onclick="toggleClear('clear', '5thNorthHedden')">Clear</button>
@@ -932,11 +954,8 @@
         </div>
     </div>
 
-    <!-- Footer Section -->
-    <footer class="footer hidden" id="footerSection">
-        <button id="stopSweepBtn" onclick="stopSweep()" class="red-button">End Sweep</button>
-        <button id="copyReportBtn" onclick="copyReport()" class="hidden primary-button">Copy to Clipboard</button>
-    </footer>
+    <button id="stopSweepBtn" onclick="stopSweep()" class="red-button">End Sweep</button>
+    <button id="copyReportBtn" onclick="copyReport()" class="hidden primary-button">Copy to Clipboard</button>
 
     <script>
         // JavaScript for header behavior
