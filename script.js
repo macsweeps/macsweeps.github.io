@@ -32,14 +32,15 @@ function formatDuration(seconds) {
     return `${minutes} minute(s) and ${remainingSeconds} second(s)`;
 }
 
-// Function to start the sweep
 function startSweep() {
     startTime = new Date();
-    document.getElementById('startSweepBtn').classList.add('hidden');
+    // Hide the overlay and button when clicked
     document.getElementById('overlay').style.display = 'none';
     document.getElementById('footerSection').classList.remove('hidden');
     document.getElementById('stopSweepBtn').classList.remove('hidden');
     document.getElementById('copyReportBtn').classList.add('hidden');
+
+    // Add additional logic to start the sweep here
 }
 
 // Function to stop the sweep
@@ -303,10 +304,12 @@ function generateFloorReport(building, floor, wing) {
     const noiseComplaintRoomInput = document.getElementById(`complaintRoomNumber${sectionId}`);
     const noiseComplaintCommentInput = document.getElementById(`complaintComments${sectionId}`);
 
-    const quiet = quietBtn && quietBtn.style.backgroundColor === 'green';
-    const noisy = noisyBtn && noisyBtn.style.backgroundColor === 'green';
+    const isClear = clearHallway && clearHallway.style.backgroundColor === 'green';
+    const isNotClear = notClearHallway && notClearHallway.style.backgroundColor === 'green';
+    const isQuiet = quietBtn && quietBtn.style.backgroundColor === 'green';
+    const isNoisy = noisyBtn && noisyBtn.style.backgroundColor === 'green';
     const noiseLevel = noiseLevelInput ? noiseLevelInput.value : '0';
-    const noiseComplaint = noiseComplaintBtn && noiseComplaintBtn.style.backgroundColor === 'green';
+    const isNoiseComplaint = noiseComplaintBtn && noiseComplaintBtn.style.backgroundColor === 'green';
     const noiseComplaintRoom = noiseComplaintRoomInput ? noiseComplaintRoomInput.value : '';
     const noiseComplaintComment = noiseComplaintCommentInput ? noiseComplaintCommentInput.value : '';
 
@@ -322,28 +325,34 @@ function generateFloorReport(building, floor, wing) {
     const additionalCommentsInput = document.getElementById(`comments${sectionId}`);
     const additionalComments = additionalCommentsInput ? additionalCommentsInput.value : '';
 
-    // Automatically set to "Clear and Quiet" with 0 people in common room if nothing is selected
-    const isClearSelected = clearHallway && clearHallway.style.backgroundColor === 'green';
-    const isQuietSelected = quietBtn && quietBtn.style.backgroundColor === 'green';
-    const isCommonRoomDefault = peopleInCommonRoom === '0' && activities.length === 0;
+    // Construct the report logic
+    if ((isClear && isQuiet) || (!isClear && !isNotClear && !isNoisy && !isNoiseComplaint)) {
+        // If both are selected as "Clear" and "Quiet", or if no selections are made
+        report += 'Clear and Quiet\n';
+    } else {
+        // If hallways are clear but noise is not quiet
+        if (isClear) {
+            report += 'Hallways: Clear\n';
+        } else if (isNotClear) {
+            report += `Hallways: ${peopleInHall} people\n`;
+        }
 
-    if (isClearSelected || isQuietSelected || !isCommonRoomDefault) {
-        if (isClearSelected && isQuietSelected) {
-            report += `Clear and Quiet\n`;
-        } else {
-            report += `Hallways: ${isClearSelected ? 'Clear' : `${peopleInHall} people in hall`}\n`;
-            report += `Noise: ${isQuietSelected ? 'Quiet' : noisy ? `${noiseLevel}/10 Noise level (10 is very loud)` : noiseComplaint ? `Noise complaint reported for Room ${noiseComplaintRoom}` : 'Quiet'}\n`;
-            if (noiseComplaint && noiseComplaintComment) {
+        // Noise level or noise complaint details
+        if (isNoisy) {
+            report += `Noise level: ${noiseLevel}/10\n`;
+        } else if (isNoiseComplaint) {
+            report += `Noise complaint reported for Room ${noiseComplaintRoom}\n`;
+            if (noiseComplaintComment) {
                 report += `Noise Complaint Comment: ${noiseComplaintComment}\n`;
             }
+        } else if (!isQuiet) {
+            report += 'Noise level: Quiet\n';
         }
+    }
 
-        if (!isCommonRoomDefault) {
-            report += `Common Room: ${peopleInCommonRoom} people in room (${activities.join(', ')})\n`;
-        }
-    } else {
-        report += `Clear and Quiet\n`;
-        report += `Common Room: 0 people in room\n`;
+    // Construct the report for the common room
+    if (peopleInCommonRoom > 0 || activities.length > 0) {
+        report += `Common Room: ${peopleInCommonRoom} people in room (${activities.join(', ')})\n`;
     }
 
     // Add additional comments if present
@@ -354,6 +363,7 @@ function generateFloorReport(building, floor, wing) {
     report += `\n`; // Add space after each wing
     return report;
 }
+
 
 // Function to generate the floor report for each floor in Edwards Hall
 function generateEdwardsFloorReport(building, floor) {
@@ -374,57 +384,119 @@ function generateEdwardsFloorReport(building, floor) {
     const noiseComplaintRoomInput = document.getElementById(`complaintRoomNumber${sectionId}`);
     const noiseComplaintCommentInput = document.getElementById(`complaintComments${sectionId}`);
 
-    const quiet = quietBtn && quietBtn.style.backgroundColor === 'green';
-    const noisy = noisyBtn && noisyBtn.style.backgroundColor === 'green';
+    const isClear = clearHallway && clearHallway.style.backgroundColor === 'green';
+    const isNotClear = notClearHallway && notClearHallway.style.backgroundColor === 'green';
+    const isQuiet = quietBtn && quietBtn.style.backgroundColor === 'green';
+    const isNoisy = noisyBtn && noisyBtn.style.backgroundColor === 'green';
     const noiseLevel = noiseLevelInput ? noiseLevelInput.value : '0';
-    const noiseComplaint = noiseComplaintBtn && noiseComplaintBtn.style.backgroundColor === 'green';
+    const isNoiseComplaint = noiseComplaintBtn && noiseComplaintBtn.style.backgroundColor === 'green';
     const noiseComplaintRoom = noiseComplaintRoomInput ? noiseComplaintRoomInput.value : '';
     const noiseComplaintComment = noiseComplaintCommentInput ? noiseComplaintCommentInput.value : '';
 
-    // Common Room status
-    const commonRoomPeopleInput = document.getElementById(`commonRoomPeople${sectionId}`);
-    const peopleInCommonRoom = commonRoomPeopleInput ? commonRoomPeopleInput.value : '0';
-    let activities = [];
-    document.querySelectorAll(`#commonRoomOptions${sectionId} input[type="checkbox"]:checked`).forEach(checkbox => {
-        activities.push(checkbox.value);
-    });
+    // Common Room/Kitchen status based on the floor
+    let kitchenPeopleInput, peopleInKitchen = '0', kitchenActivities = [];
+    let commonRoom108PeopleInput, peopleInCommonRoom108 = '0', commonRoom108Activities = [];
+    let commonRoom115PeopleInput, peopleInCommonRoom115 = '0', commonRoom115Activities = [];
 
-    // Additional Comments
-    const additionalCommentsInput = document.getElementById(`comments${sectionId}`);
-    const additionalComments = additionalCommentsInput ? additionalCommentsInput.value : '';
-
-    // Automatically set to "Clear and Quiet" with 0 people in common room if nothing is selected
-    const isClearSelected = clearHallway && clearHallway.style.backgroundColor === 'green';
-    const isQuietSelected = quietBtn && quietBtn.style.backgroundColor === 'green';
-    const isCommonRoomDefault = peopleInCommonRoom === '0' && activities.length === 0;
-
-    if (isClearSelected || isQuietSelected || !isCommonRoomDefault) {
-        if (isClearSelected && isQuietSelected) {
-            report += `Clear and Quiet\n`;
-        } else {
-            report += `Hallways: ${isClearSelected ? 'Clear' : `${peopleInHall} people in hall`}\n`;
-            report += `Noise: ${isQuietSelected ? 'Quiet' : noisy ? `${noiseLevel}/10 Noise level (10 is very loud)` : noiseComplaint ? `Noise complaint reported for Room ${noiseComplaintRoom}` : 'Quiet'}\n`;
-            if (noiseComplaint && noiseComplaintComment) {
-                report += `Noise Complaint Comment: ${noiseComplaintComment}\n`;
-            }
+    if (floor === '2nd') {
+        // Floor 2 specific handling for Kitchen 226
+        kitchenPeopleInput = document.getElementById(`commonRoomPeople2ndNorthEdwards`);
+        if (kitchenPeopleInput && kitchenPeopleInput.value > 0) {
+            peopleInKitchen = kitchenPeopleInput.value;
+            document.querySelectorAll(`#commonRoomOptions2ndNorthEdwards input[type="checkbox"]:checked`).forEach(checkbox => {
+                kitchenActivities.push(checkbox.value);
+            });
+        }
+        
+    } else if (floor === '1st') {
+        // Floor 1 specific handling for Common Room 108 and Common Room 115
+        commonRoom108PeopleInput = document.getElementById(`commonRoomPeople1stNorthEdwards108`);
+        if (commonRoom108PeopleInput && commonRoom108PeopleInput.value > 0) {
+            peopleInCommonRoom108 = commonRoom108PeopleInput.value;
+            document.querySelectorAll(`#commonRoomOptions1stNorthEdwards108 input[type="checkbox"]:checked`).forEach(checkbox => {
+                commonRoom108Activities.push(checkbox.value);
+            });
         }
 
-        if (!isCommonRoomDefault) {
-            report += `Common Room: ${peopleInCommonRoom} people in room (${activities.join(', ')})\n`;
+        commonRoom115PeopleInput = document.getElementById(`commonRoomPeople1stNorthEdwards115`);
+        if (commonRoom115PeopleInput && commonRoom115PeopleInput.value > 0) {
+            peopleInCommonRoom115 = commonRoom115PeopleInput.value;
+            document.querySelectorAll(`#commonRoomOptions1stNorthEdwards115 input[type="checkbox"]:checked`).forEach(checkbox => {
+                commonRoom115Activities.push(checkbox.value);
+            });
         }
-    } else {
-        report += `Clear and Quiet\n`;
-        report += `Common Room: 0 people in room\n`;
+
     }
 
-    // Add additional comments if present
-    if (additionalComments) {
-        report += `Additional Comments: ${additionalComments}\n`;
+    // Additional Comments
+    const additionalCommentsInput2 = document.getElementById(`comments2ndNorthEdwards`);
+    const additionalComments2 = additionalCommentsInput2 ? additionalCommentsInput2.value.trim() : '';
+
+    // Additional Comments
+    const additionalCommentsInput1 = document.getElementById(`comments1stNorthEdwards`);
+    const additionalComments1 = additionalCommentsInput1 ? additionalCommentsInput1.value.trim() : '';
+
+    // Additional Comments
+    const additionalCommentsInput3 = document.getElementById(`comments3rdNorthEdwards`);
+    const additionalComments3 = additionalCommentsInput3 ? additionalCommentsInput3.value.trim() : '';
+
+
+    // Construct the report logic
+    if ((isClear && isQuiet) || (!isClear && !isNotClear && !isNoisy && !isNoiseComplaint)) {
+        // If both are selected as "Clear" and "Quiet", or if no selections are made
+        report += 'Clear and Quiet\n';
+    } else {
+        // If hallways are clear but noise is not quiet
+        if (isClear) {
+            report += 'Hallways: Clear\n';
+        } else if (isNotClear) {
+            report += `Hallways: ${peopleInHall} people\n`;
+        }
+
+        // Noise level or noise complaint details
+        if (isNoisy) {
+            report += `Noise level: ${noiseLevel}/10\n`;
+        } else if (isNoiseComplaint) {
+            report += `Noise complaint reported for Room ${noiseComplaintRoom}\n`;
+            if (noiseComplaintComment) {
+                report += `Noise Complaint Comment: ${noiseComplaintComment}\n`;
+            }
+        } else if (!isQuiet) {
+            report += 'Noise level: Quiet\n';
+        }
+    }
+
+    // Construct the report for specific rooms
+    if (floor === '2nd') {
+        if (peopleInKitchen > 0 || kitchenActivities.length > 0) {
+            report += `Kitchen 226: ${peopleInKitchen} people in room (${kitchenActivities.join(', ')})\n`;
+            // Include Additional Comments if present
+            if (additionalComments2) {
+                report += `Additional Comments: ${additionalComments2}\n`;
+            }
+        }
+    } else if (floor === '1st') {
+        if (peopleInCommonRoom108 > 0 || commonRoom108Activities.length > 0) {
+            report += `Common Room 108: ${peopleInCommonRoom108} people in room (${commonRoom108Activities.join(', ')})\n`;
+        }
+        if (peopleInCommonRoom115 > 0 || commonRoom115Activities.length > 0) {
+            report += `Common Room 115: ${peopleInCommonRoom115} people in room (${commonRoom115Activities.join(', ')})\n`;
+        }
+        if (additionalComments1) {
+            report += `Additional Comments: ${additionalComments1}\n`;
+        }
+    } else if (floor === '3rd') {
+        // Include Additional Comments if present
+        if (additionalComments3) {
+            report += `Additional Comments: ${additionalComments3}\n`;
+        }
     }
 
     report += `\n`; // Add space after each floor
     return report;
 }
+
+
 
 // Function to generate the basement report for each building
 function generateBasementReport(building, basement) {
@@ -437,8 +509,6 @@ function generateBasementReport(building, basement) {
         let studyRoomB111Status = 'Unlocked, 0 people in room';
         let studyRoomB112Status = 'Unlocked, 0 people in room';
         let laundryRoomPeople = '0';
-        let femaleWashroomPeople = '0';
-        let maleWashroomPeople = '0';
 
         // Check if any inputs are filled; otherwise, assume defaults
         const ravineRoomPeopleInput = document.getElementById('ravineRoomPeople');
@@ -464,17 +534,19 @@ function generateBasementReport(building, basement) {
         const laundryRoomPeopleInput = document.getElementById('laundryRoomPeople');
         if (laundryRoomPeopleInput) laundryRoomPeople = laundryRoomPeopleInput.value;
 
-        const femaleWashroomPeopleInput = document.getElementById('femaleWashroomPeople');
-        if (femaleWashroomPeopleInput) femaleWashroomPeople = femaleWashroomPeopleInput.value;
-
-        const maleWashroomPeopleInput = document.getElementById('maleWashroomPeople');
-        if (maleWashroomPeopleInput) maleWashroomPeople = maleWashroomPeopleInput.value;
+        // Additional Comments for Hedden Basement
+        const additionalCommentsInput = document.getElementById('basementComments');
+        const additionalComments = additionalCommentsInput ? additionalCommentsInput.value.trim() : '';
 
         report += `Ravine Room: ${ravineRoomPeople} people in room (${ravineActivities.join(', ')})\n`;
         report += `Study Room B111: ${studyRoomB111Status}\n`;
         report += `Study Room B112: ${studyRoomB112Status}\n`;
         report += `Laundry Room: ${laundryRoomPeople} people in room\n`;
-        report += `Washrooms: ${femaleWashroomPeople} in Female, ${maleWashroomPeople} in Male\n`;
+
+        // Include Additional Comments if present
+        if (additionalComments) {
+            report += `Additional Comments: ${additionalComments}\n`;
+        }
     }
 
     if (building === 'Edwards') {
@@ -535,6 +607,10 @@ function generateBasementReport(building, basement) {
                 kitchenetteActivities.push(checkbox.value);
             });
         }
+        
+        // Additional Comments for Edwards Basement
+        const additionalCommentsInputEdwards = document.getElementById('basementCommentsEdwards');
+        const additionalCommentsEdwards = additionalCommentsInputEdwards ? additionalCommentsInputEdwards.value.trim() : '';
 
         report += `Games Room: ${gamesRoomPeople} people in room (${gamesActivities.join(', ')})\n`;
         report += `Study Room B105: ${studyRoomB105Status}\n`;
@@ -543,6 +619,11 @@ function generateBasementReport(building, basement) {
         report += `Laundry Room: ${laundryRoomPeople} people in room\n`;
         report += `Kitchen: ${kitchenPeople} people in room (${kitchenActivities.join(', ')})\n`;
         report += `Kitchenette: ${kitchenettePeople} people in room (${kitchenetteActivities.join(', ')})\n`;
+
+        // Include Additional Comments if present for Edwards Basement
+        if (additionalCommentsEdwards) {
+            report += `Additional Comments: ${additionalCommentsEdwards}\n`;
+        }
     }
 
     report += `\n`; // Add space after basement section

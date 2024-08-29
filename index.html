@@ -5,12 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sweep Tracker</title>
     <link rel="stylesheet" href="styles.css">
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sweep Tracker</title>
-    <link rel="stylesheet" href="styles.css">
     <style>
-        /* Header styling */
+        /* Additional styles for responsive header */
         .header {
             position: fixed;
             top: 0;
@@ -28,82 +24,43 @@
             top: -100px; /* Hide the header when scrolling */
         }
 
-        /* Adjust body margin to prevent overlap with fixed header */
-        body {
-            margin-top: 100px; /* Height of the header */
-        }
-
-        /* Big button styling */
-        .big-button {
-            width: 80%;
-            max-width: 300px;
-            margin: 20px auto;
-            padding: 20px;
-            font-size: 24px;
-            color: white;
-            background-color: gray;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            text-align: center;
-            display: block;
-        }
-
-        /* Green button state */
-        .big-button.green {
-            background-color: green;
-        }
-
-        /* Container styling */
-        .container {
-            padding: 20px;
-        }
-
-        /* Footer section */
-        .footer {
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-            background-color: #007bff;
-            padding: 10px;
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            z-index: 1000;
-        }
-
-        .button {
-            padding: 10px 20px;
-            font-size: 18px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        .red-button {
-            background-color: red;
-            color: white;
-        }
-
-        .hidden {
+        .menu-icon {
             display: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: white;
         }
 
-        /* Overlay to disable site */
-        .overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            z-index: 999;
+        .navigation-buttons {
             display: flex;
-            justify-content: center;
-            align-items: center;
-            color: white;
-            font-size: 24px;
-            text-align: center;
+            gap: 10px;
+        }
+
+        .header-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .navigation-buttons, .header-buttons {
+                display: none;
+            }
+
+            .menu-icon {
+                display: block;
+            }
+
+            .header.show-menu .navigation-buttons,
+            .header.show-menu .header-buttons {
+                display: flex;
+                flex-direction: column;
+                background-color: #007bff;
+                position: absolute;
+                top: 40px;
+                width: 100%;
+                left: 0;
+                padding: 10px;
+            }
         }
     </style>
 </head>
@@ -112,7 +69,6 @@
     <header class="header" id="mainHeader">
         <div>
             <h1>Hedwards Sweeps</h1>
-            <!-- Overlay to lock the site until "Start Sweep" is clicked -->
         </div>
         <div class="navigation-buttons">
             <!-- Hedden Floors -->
@@ -124,26 +80,26 @@
             <button onclick="scrollToSection('hedden-basement')">HB</button>
         </div>
         <div class="navigation-buttons">
-            <!-- Edwards Floors -->
             <button onclick="scrollToSection('edwards-3rd-floor')">E3</button>
             <button onclick="scrollToSection('edwards-2nd-floor')">E2</button>
             <button onclick="scrollToSection('edwards-1st-floor')">E1</button>
             <button onclick="scrollToSection('edwards-basement')">EB</button>
         </div>
-
     </header>
 
-    <div class="overlay" id="overlay">
-        <button id="startSweepBtn" class="big-button" onclick="startSweep()">Start Sweep</button>
+    <div id="overlay" class="overlay">
+        <button id="startSweepOverlayBtn" onclick="startSweep()">Start Sweep</button>
     </div>
 
     <!-- Main Content Section -->
     <div class="container" id="floor-container" style="margin-top: 100px;">
+
         <!-- Hedden Floors -->
         <div class="section" id="hedden-5th-floor">
+            <h2>Hedden: 5th Floor</h2>
             <!-- North Wing -->
             <div class="wing-section">
-                <h2>5th Floor: North Wing</h2>
+                <h3>North Wing</h3>
                 <div class="section">
                     <p><strong>Is the hallway clear?</strong></p>
                     <button id="clearBtn5thNorthHedden" onclick="toggleClear('clear', '5thNorthHedden')">Clear</button>
@@ -235,7 +191,7 @@
         </div>
 
         <!-- Repeat similar sections for all Hedden and Edwards floors -->
-        
+
         <!-- Example for Hedden 4th Floor -->
         <div class="section" id="hedden-4th-floor">
             <h2>Hedden: 4th Floor</h2>
@@ -623,7 +579,7 @@
         <!-- Hedden Basement -->
         <div class="section" id="hedden-basement">
             <h2>Hedden: Basement</h2>
-            
+
             <!-- Ravine Room -->
             <div class="wing-section">
                 <h3>Ravine Room</h3>
@@ -678,19 +634,6 @@
                 </div>
             </div>
 
-            <!-- Washrooms -->
-            <div class="wing-section">
-                <h3>Washrooms</h3>
-                <div class="section">
-                    <label for="femaleWashroomPeople"><strong>Number of people in Female Washroom:</strong></label>
-                    <input type="number" id="femaleWashroomPeople" placeholder="0" value="0" min="0">
-                </div>
-                <div class="section">
-                    <label for="maleWashroomPeople"><strong>Number of people in Male Washroom:</strong></label>
-                    <input type="number" id="maleWashroomPeople" placeholder="0" value="0" min="0">
-                </div>
-            </div>
-
             <!-- Additional Comments -->
             <div class="section">
                 <h4><strong>Additional Comments</strong></h4>
@@ -725,18 +668,6 @@
                     <div id="noiseComplaintForm3rdNorthEdwards" class="hidden">
                         <input type="text" id="complaintRoomNumber3rdNorthEdwards" placeholder="Room Number">
                         <input type="text" id="complaintComments3rdNorthEdwards" placeholder="Additional Comments">
-                    </div>
-                </div>
-
-                <div class="room-section">
-                    <h4><strong>Common Room/Kitchen</strong></h4>
-                    <input type="number" id="commonRoomPeople3rdNorthEdwards" placeholder="0" value="0" min="0" oninput="showCommonRoomOptions('3rdNorthEdwards')">
-                    <div id="commonRoomOptions3rdNorthEdwards" class="hidden">
-                        <label><input type="checkbox" value="studying"> Studying</label>
-                        <label><input type="checkbox" value="on phone"> On Phone</label>
-                        <label><input type="checkbox" value="cooking"> Cooking</label>
-                        <label><input type="checkbox" value="filling water"> Filling Water</label>
-                        <label><input type="checkbox" value="hanging out"> Hanging Out</label>
                     </div>
                 </div>
 
@@ -777,7 +708,7 @@
                 </div>
 
                 <div class="room-section">
-                    <h4><strong>Common Room/Kitchen</strong></h4>
+                    <h4><strong>People in Kitchen 226:</strong></h4>
                     <input type="number" id="commonRoomPeople2ndNorthEdwards" placeholder="0" value="0" min="0" oninput="showCommonRoomOptions('2ndNorthEdwards')">
                     <div id="commonRoomOptions2ndNorthEdwards" class="hidden">
                         <label><input type="checkbox" value="studying"> Studying</label>
@@ -825,12 +756,22 @@
                 </div>
 
                 <div class="room-section">
-                    <h4><strong>Common Room/Kitchen</strong></h4>
-                    <input type="number" id="commonRoomPeople1stNorthEdwards" placeholder="0" value="0" min="0" oninput="showCommonRoomOptions('1stNorthEdwards')">
-                    <div id="commonRoomOptions1stNorthEdwards" class="hidden">
+                    <h4><strong>People in Common Room 108:</strong></h4>
+                    <input type="number" id="commonRoomPeople1stNorthEdwards108" placeholder="0" value="0" min="0" oninput="showCommonRoomOptions('1stNorthEdwards108')">
+                    <div id="commonRoomOptions1stNorthEdwards108" class="hidden">
                         <label><input type="checkbox" value="studying"> Studying</label>
                         <label><input type="checkbox" value="on phone"> On Phone</label>
-                        <label><input type="checkbox" value="cooking"> Cooking</label>
+                        <label><input type="checkbox" value="filling water"> Filling Water</label>
+                        <label><input type="checkbox" value="hanging out"> Hanging Out</label>
+                    </div>
+                </div>
+
+                <div class="room-section">
+                    <h4><strong>People in Common Room 115:</strong></h4>
+                    <input type="number" id="commonRoomPeople1stNorthEdwards115" placeholder="0" value="0" min="0" oninput="showCommonRoomOptions('1stNorthEdwards115')">
+                    <div id="commonRoomOptions1stNorthEdwards115" class="hidden">
+                        <label><input type="checkbox" value="studying"> Studying</label>
+                        <label><input type="checkbox" value="on phone"> On Phone</label>
                         <label><input type="checkbox" value="filling water"> Filling Water</label>
                         <label><input type="checkbox" value="hanging out"> Hanging Out</label>
                     </div>
@@ -846,7 +787,7 @@
         <!-- Edwards Basement -->
         <div class="section" id="edwards-basement">
             <h2>Edwards: Basement</h2>
-            
+
             <!-- Study Room B105 -->
             <div class="wing-section">
                 <h3>Study Room B105</h3>
@@ -897,12 +838,12 @@
                     <input type="number" id="gamesRoomPeople" placeholder="0" value="0" min="0" oninput="toggleGamesRoomOptions()">
                 </div>
                 <div id="gamesRoomOptions" class="hidden">
-    
+
                     <label><input type="checkbox" value="watching tv"> Watching TV</label>
                     <label><input type="checkbox" value="playing ping-pong"> Playing Ping-Pong</label>
                     <label><input type="checkbox" value="playing pool"> Playing Pool</label>
                     <label><input type="checkbox" value="hanging out"> Hanging Out</label>
-                
+
                     <!-- Add any other options as needed -->
                 </div>
             </div>
@@ -954,8 +895,11 @@
         </div>
     </div>
 
-    <button id="stopSweepBtn" onclick="stopSweep()" class="red-button">End Sweep</button>
-    <button id="copyReportBtn" onclick="copyReport()" class="hidden primary-button">Copy to Clipboard</button>
+    <!-- Footer Section -->
+    <footer class="footer hidden" id="footerSection">
+        <button id="stopSweepBtn" onclick="stopSweep()" class="red-button">End Sweep</button>
+        <button id="copyReportBtn" onclick="copyReport()" class="hidden primary-button">Copy to Clipboard</button>
+    </footer>
 
     <script>
         // JavaScript for header behavior
