@@ -35,7 +35,8 @@ function formatDuration(seconds) {
 // Function to start the sweep
 function startSweep() {
     startTime = new Date();
-    document.getElementById('startSweepBtn').style.backgroundColor = 'green';
+    document.getElementById('startSweepBtn').classList.add('hidden');
+    document.getElementById('overlay').style.display = 'none';
     document.getElementById('footerSection').classList.remove('hidden');
     document.getElementById('stopSweepBtn').classList.remove('hidden');
     document.getElementById('copyReportBtn').classList.add('hidden');
