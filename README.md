@@ -10,3 +10,8 @@ How to use:
 2. Fill in the information for the sweep.
 3. Press end sweep.
 4. Press copy to clipboard and paste to teams.
+
+
+Contributors:
+
+Mit Patel - https://github.com/mitpatel17
