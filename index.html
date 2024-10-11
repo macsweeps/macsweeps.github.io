@@ -36,12 +36,10 @@
                 <li><button id="copyReportBtn" class="hidden primary-button" onclick="copyReport()" style="display: none;">Copy to Clipboard</button></li>
             </ul>
         </nav> -->
-        <nav class="fixed-header" id="sidebar">
-            <button id="stopSweepBtn" onclick="stopSweep()">End Sweep</button>
-            <button id="copyReportBtn" class="hidden primary-button" onclick="copyReport()" style="display: none;">Copy to Clipboard</button>
-        </nav>
         <!-- Main Content Section -->
         <div class="main-container" id="main-container">
+            <button id="stopSweepBtn" onclick="stopSweep()">End Sweep</button>
+            <button id="copyReportBtn" class="hidden primary-button" onclick="copyReport()" style="display: none;">Copy to Clipboard</button>
             <div class="floor-container" id="hedden-5th-floor">
                 <h2>Hedden: 5th Floor</h2>
                 <div class="section">
@@ -625,9 +623,14 @@
                 </div>
 
                 <!-- Additional Comments -->
-                <div class="section" style="margin-bottom: 75px;">
+                <div class="section" >
                     <h4><strong>Additional Comments</strong></h4>
                     <textarea id="basementCommentsEdwards" placeholder="Enter any additional comments here..."></textarea>
+                </div>
+                
+                <div class="section" style="margin-bottom: 75px; display: flex; justify-content: center; align-items: center;">
+                    <button id="stopSweepBtn" onclick="stopSweep()">End Sweep</button>
+                    <button id="copyReportBtn" class="hidden primary-button" onclick="copyReport()" style="display: none;">Copy to Clipboard</button>
                 </div>
             </div>
         </div>

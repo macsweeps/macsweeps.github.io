@@ -26,10 +26,10 @@
 
 /* Adjust the stop button inside the header */
 .fixed-header button {
-    margin: 0 5px; /* Add spacing between buttons */
-    padding: 10px 20px; /* Adjust padding to make the button more prominent */
+    padding: 30px 20px; /* Adjust padding to make the button more prominent */
     background-color: #f44336; /* Make it stand out as a critical action */
     color: white;
+    width: 100%;
     border: none;
     border-radius: 5px;
     cursor: pointer;
@@ -43,6 +43,7 @@
     background-color: blue;
     color: white;
     border: none;
+    width: 100%;
     font-size: 15px;  /* Adjust font size to fit in the square */
     cursor: pointer;
     border-radius: 5px; /* Keep a small radius for rounded corners */
@@ -114,6 +115,9 @@ body {
     transition: background-color 0.3s, color 0.3s;
 }
 
+.floor-container h2 {
+    text-align: left;
+}
 .sidebar button:hover {
     background-color: #1976d2;
     color: white;
@@ -121,7 +125,7 @@ body {
 
 /* Main Content Area */
 .main-container {
-    margin-top: 70px;
+
     width: 90%; /* 4/5 of the screen width */
     overflow-y: scroll; /* Enable vertical scrolling */
     scroll-behavior: smooth;
