@@ -121,12 +121,13 @@ body {
 
 /* Main Content Area */
 .main-container {
-    margin-top: 60px; /* Same as before, adjust based on header height */
-    padding: 20px;
-    height: calc(100vh - 60px); /* Full viewport height minus header */
-    overflow-y: auto; /* Enable vertical scrolling */
-    scroll-snap-type: y mandatory; /* Enable snapping behavior on vertical axis */
-    scroll-behavior: smooth; /* Smooth scrolling behavior */
+    margin-top: 60px;
+    width: 90%; /* 4/5 of the screen width */
+    overflow-y: scroll; /* Enable vertical scrolling */
+    scroll-behavior: smooth;
+    scroll-snap-type: y mandatory;
+    height: 100vh; /* Full viewport height */
+    box-sizing: border-box;
 }
 
 .floor-container {
