@@ -30,6 +30,11 @@
     transition: transform 0.2s ease-in-out;
 }
 
+.sidebar button.active {
+    background-color: #13e71d;
+    color: white;
+}
+
 #stopSweepBtn:hover {
     transform: scale(1.1); /* Slight zoom on hover */
 }

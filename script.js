@@ -3,19 +3,72 @@ let startTime;
 let stopTime;
 let duration;
 
-// Function to scroll to a specific floor within main-container
-function scrollToFloor(floorId) {
-    const floorElement = document.getElementById(floorId);
+document.addEventListener('DOMContentLoaded', () => {
     const mainContainer = document.getElementById('main-container');
+    const floors = document.querySelectorAll('.floor-container');
+    const buttons = document.querySelectorAll('.sidebar button');
+    
+    let isScrolling = false;
 
-    // Calculate the position of the floor element relative to the main container
-    const scrollPosition = floorElement.offsetTop - mainContainer.offsetTop;
+    function highlightButton(floorId) {
+        buttons.forEach(button => {
+            button.classList.remove('active');
+            if (button.onclick.toString().includes(floorId)) {
+                button.classList.add('active');
+            }
+        });
+    }
 
-    mainContainer.scrollTo({
-        top: scrollPosition,
-        behavior: 'smooth'
+    function scrollToFloor(floorId) {
+        const floorElement = document.getElementById(floorId);
+        const scrollPosition = floorElement.offsetTop - mainContainer.offsetTop;
+
+        mainContainer.scrollTo({
+            top: scrollPosition,
+            behavior: 'smooth'
+        });
+
+        highlightButton(floorId);
+    }
+
+    // Detect scrolling and decide whether to move to the next/previous section
+    mainContainer.addEventListener('scroll', () => {
+        if (isScrolling) return;
+
+        const scrollPosition = mainContainer.scrollTop;
+        const containerHeight = mainContainer.clientHeight;
+
+        let currentFloor;
+        floors.forEach((floor, index) => {
+            const floorTop = floor.offsetTop - mainContainer.offsetTop;
+            const floorHeight = floor.clientHeight;
+
+            if (scrollPosition >= floorTop && scrollPosition < floorTop + floorHeight) {
+                currentFloor = index;
+            }
+        });
+
+        if (currentFloor !== undefined) {
+            const currentFloorElement = floors[currentFloor];
+            const floorTop = currentFloorElement.offsetTop - mainContainer.offsetTop;
+            const scrolledPercentage = (scrollPosition - floorTop) / currentFloorElement.clientHeight;
+
+            if (scrolledPercentage >= 0.5 && currentFloor < floors.length - 1) {
+                isScrolling = true;
+                scrollToFloor(floors[currentFloor + 1].id);
+            } else if (scrolledPercentage < -0.5 && currentFloor > 0) {
+                isScrolling = true;
+                scrollToFloor(floors[currentFloor - 1].id);
+            } else {
+                highlightButton(floors[currentFloor].id);
+            }
+
+            setTimeout(() => {
+                isScrolling = false;
+            }, 500);  // Prevent continuous scrolling effect
+        }
     });
-}
+});
 
 // Function to format time to '4:15 pm' or '12:00 am'
 function formatTime(date) {
