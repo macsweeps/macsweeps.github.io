@@ -18,20 +18,20 @@
         <!-- Sidebar Navigation -->
         <nav class="sidebar" id="sidebar">
             <ul>
-                <li><button onclick="scrollToFloor('hedden-5th-floor')">H5</button></li>
-                <li><button onclick="scrollToFloor('hedden-4th-floor')">H4</button></li>
-                <li><button onclick="scrollToFloor('hedden-3rd-floor')">H3</button></li>
-                <li><button onclick="scrollToFloor('hedden-2nd-floor')">H2</button></li>
-                <li><button onclick="scrollToFloor('hedden-1st-floor')">H1</button></li>
-                <li><button onclick="scrollToFloor('hedden-basement')">HB</button></li>
+                <li><button data-floor-id="hedden-5th-floor">H5</button></li>
+                <li><button data-floor-id="hedden-4th-floor">H4</button></li>
+                <li><button data-floor-id="hedden-3rd-floor">H3</button></li>
+                <li><button data-floor-id="hedden-2nd-floor">H2</button></li>
+                <li><button data-floor-id="hedden-1st-floor">H1</button></li>
+                <li><button data-floor-id="hedden-basement">HB</button></li>
             </ul>
         </nav>
-            <nav class="sidebar" id="sidebar"> 
+        <nav class="sidebar" id="sidebar">
             <ul>
-                <li><button onclick="scrollToFloor('edwards-3rd-floor')">E3</button></li>
-                <li><button onclick="scrollToFloor('edwards-2nd-floor')">E2</button></li>
-                <li><button onclick="scrollToFloor('edwards-1st-floor')">E1</button></li>
-                <li><button onclick="scrollToFloor('edwards-basement')">EB</button></li>
+                <li><button data-floor-id="edwards-3rd-floor">E3</button></li>
+                <li><button data-floor-id="edwards-2nd-floor">E2</button></li>
+                <li><button data-floor-id="edwards-1st-floor">E1</button></li>
+                <li><button data-floor-id="edwards-basement">EB</button></li>
                 <li><button id="stopSweepBtn" onclick="stopSweep()">End Sweep</button></li>
                 <li><button id="copyReportBtn" class="hidden primary-button" onclick="copyReport()" style="display: none;">Copy to Clipboard</button></li>
             </ul>
