@@ -125,8 +125,6 @@ body {
 
 /* Main Content Area */
 .main-container {
-
-    width: 90%; /* 4/5 of the screen width */
     overflow-y: scroll; /* Enable vertical scrolling */
     scroll-behavior: smooth;
     scroll-snap-type: y mandatory;
