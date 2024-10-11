@@ -115,12 +115,14 @@ body {
     transition: background-color 0.3s, color 0.3s;
 }
 
-.floor-container h2 {
-    text-align: left;
-}
 .sidebar button:hover {
     background-color: #1976d2;
     color: white;
+}
+
+h2 {
+    margin-top: 20px; /* Adjust this value */
+    padding-top: 60px; /* Additional padding to prevent cut-off */
 }
 
 /* Main Content Area */
@@ -128,7 +130,6 @@ body {
     overflow-y: scroll; /* Enable vertical scrolling */
     scroll-behavior: smooth;
     scroll-snap-type: y mandatory;
-    height: 100vh; /* Full viewport height */
     box-sizing: border-box;
 }
 
@@ -136,6 +137,8 @@ body {
     scroll-snap-align: start;
     min-height: 100vh; /* Ensure each floor takes full viewport height */
     overflow-y: auto;
+    margin-top: 20px; /* Adjust this value */
+    padding-top: 20px; /* Additional padding to prevent cut-off */
     padding: 20px;
     box-sizing: border-box;
     background-color: #ffffff;
