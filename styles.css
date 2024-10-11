@@ -18,8 +18,8 @@
     background-color: red;
     color: white;
     border: none;
-    width: 150px;  /* Make the button square */
-    height: 150px; /* Ensure the button height is equal to width */
+    width: 40px;  /* Make the button square */
+    height: 40px; /* Ensure the button height is equal to width */
     font-size: 10px;  /* Adjust font size to fit in the square */
     cursor: pointer;
     border-radius: 5px; /* Keep a small radius for rounded corners */
@@ -27,7 +27,6 @@
     justify-content: center;
     align-items: center;
     text-align: center;
-    margin: 20px auto; /* Optional: center the button horizontally */
     transition: transform 0.2s ease-in-out;
 }
 
@@ -39,8 +38,8 @@
     background-color: blue;
     color: white;
     border: none;
-    width: 150px;  /* Make the button square */
-    height: 150px; /* Ensure the button height is equal to width */
+    width: 40px;  /* Make the button square */
+    height: 50px; /* Ensure the button height is equal to width */
     font-size: 10px;  /* Adjust font size to fit in the square */
     cursor: pointer;
     border-radius: 5px; /* Keep a small radius for rounded corners */
