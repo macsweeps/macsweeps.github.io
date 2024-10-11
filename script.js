@@ -3,14 +3,18 @@ let startTime;
 let stopTime;
 let duration;
 
-// Function to scroll to the respective section
-function scrollToSection(sectionId) {
-    const section = document.getElementById(sectionId);
-    if (section) {
-        section.scrollIntoView({ behavior: 'smooth' });
-    } else {
-        console.error(`Section with ID ${sectionId} not found.`);
-    }
+// Function to scroll to a specific floor within main-container
+function scrollToFloor(floorId) {
+    const floorElement = document.getElementById(floorId);
+    const mainContainer = document.getElementById('main-container');
+
+    // Calculate the position of the floor element relative to the main container
+    const scrollPosition = floorElement.offsetTop - mainContainer.offsetTop;
+
+    mainContainer.scrollTo({
+        top: scrollPosition,
+        behavior: 'smooth'
+    });
 }
 
 // Function to format time to '4:15 pm' or '12:00 am'
@@ -32,13 +36,16 @@ function formatDuration(seconds) {
     return `${minutes} minute(s) and ${remainingSeconds} second(s)`;
 }
 
+// Function to start the sweep
 function startSweep() {
     startTime = new Date();
-    // Hide the overlay and button when clicked
+    
+    // Hide the overlay and display footer
     document.getElementById('overlay').style.display = 'none';
-    document.getElementById('footerSection').classList.remove('hidden');
-    document.getElementById('stopSweepBtn').classList.remove('hidden');
-    document.getElementById('copyReportBtn').classList.add('hidden');
+    
+    // Show the stop button and hide the copy button
+    document.getElementById('stopSweepBtn').style.display = 'inline-block';
+    document.getElementById('copyReportBtn').style.display = 'none'; // Hide the copy button initially
 
     // Add additional logic to start the sweep here
 }
@@ -47,8 +54,13 @@ function startSweep() {
 function stopSweep() {
     stopTime = new Date();
     duration = Math.floor((stopTime - startTime) / 1000); // Duration in seconds
-    document.getElementById('stopSweepBtn').classList.add('hidden');
-    document.getElementById('copyReportBtn').classList.remove('hidden');
+    
+    // Hide the stop button after clicking
+    document.getElementById('stopSweepBtn').style.display = 'none';
+    
+    // Show the copy report button after stopping the sweep
+    const copyReportBtn = document.getElementById('copyReportBtn');
+    copyReportBtn.style.display = 'inline-block'; // Ensure the copy button is visible
 }
 
 // Function to clear the form
@@ -249,16 +261,15 @@ function generateReport() {
     return report;
 }
 
-// Function to generate the report for Hedden Hall
+// Function to generate the report for Hedden Hall with updated structure
 function generateHeddenReport() {
     let report = `Hedden Hall:\n\n`;
     const floors = ['5th', '4th', '3rd', '2nd', '1st'];
     const basement = 'Basement';
 
+    // Generate a report for each floor without wings
     floors.forEach(floor => {
-        report += generateFloorReport('Hedden', floor, 'North');
-        report += `\n`; // Add space between wings
-        report += generateFloorReport('Hedden', floor, 'South');
+        report += generateUpdatedFloorReport('Hedden', floor);
         report += `\n`; // Add space between floors
     });
 
@@ -268,27 +279,10 @@ function generateHeddenReport() {
     return report;
 }
 
-// Function to generate the report for Edwards Hall
-function generateEdwardsReport() {
-    let report = `Edwards Hall:\n\n`;
-    const floors = ['3rd', '2nd', '1st'];
-    const basement = 'Basement';
-
-    floors.forEach(floor => {
-        report += generateEdwardsFloorReport('Edwards', floor);
-        report += `\n`; // Add space between floors
-    });
-
-    report += generateBasementReport('Edwards', basement);
-    report += `\n`; // Add space after basements
-
-    return report;
-}
-
-// Function to generate the floor report for each floor in Hedden Hall
-function generateFloorReport(building, floor, wing) {
-    let sectionId = `${floor}${wing}${building}`;
-    let report = `${building}: ${floor} Floor ${wing} Wing:\n`;
+// Function to generate the updated floor report for Hedden Hall
+function generateUpdatedFloorReport(building, floor) {
+    let sectionId = `${floor}Hedden`;
+    let report = `${building}: ${floor} Floor:\n`;
 
     // Hallway status
     const clearHallway = document.getElementById(`clearBtn${sectionId}`);
@@ -314,11 +308,20 @@ function generateFloorReport(building, floor, wing) {
     const noiseComplaintComment = noiseComplaintCommentInput ? noiseComplaintCommentInput.value : '';
 
     // Common Room status
-    const commonRoomPeopleInput = document.getElementById(`commonRoomPeople${sectionId}`);
-    const peopleInCommonRoom = commonRoomPeopleInput ? commonRoomPeopleInput.value : '0';
-    let activities = [];
-    document.querySelectorAll(`#commonRoomOptions${sectionId} input[type="checkbox"]:checked`).forEach(checkbox => {
-        activities.push(checkbox.value);
+    const northCommonRoomPeopleInput = document.getElementById(`commonRoomPeople${floor}NorthHedden`);
+    const southCommonRoomPeopleInput = document.getElementById(`commonRoomPeople${floor}SouthHedden`);
+    const peopleInNorthCommonRoom = northCommonRoomPeopleInput ? northCommonRoomPeopleInput.value : '0';
+    const peopleInSouthCommonRoom = southCommonRoomPeopleInput ? southCommonRoomPeopleInput.value : '0';
+
+    let northActivities = [];
+    let southActivities = [];
+
+    document.querySelectorAll(`#commonRoomOptions${floor}NorthHedden input[type="checkbox"]:checked`).forEach(checkbox => {
+        northActivities.push(checkbox.value);
+    });
+
+    document.querySelectorAll(`#commonRoomOptions${floor}SouthHedden input[type="checkbox"]:checked`).forEach(checkbox => {
+        southActivities.push(checkbox.value);
     });
 
     // Additional Comments
@@ -327,17 +330,14 @@ function generateFloorReport(building, floor, wing) {
 
     // Construct the report logic
     if ((isClear && isQuiet) || (!isClear && !isNotClear && !isNoisy && !isNoiseComplaint)) {
-        // If both are selected as "Clear" and "Quiet", or if no selections are made
         report += 'Clear and Quiet\n';
     } else {
-        // If hallways are clear but noise is not quiet
         if (isClear) {
             report += 'Hallways: Clear\n';
         } else if (isNotClear) {
             report += `Hallways: ${peopleInHall} people\n`;
         }
 
-        // Noise level or noise complaint details
         if (isNoisy) {
             report += `Noise level: ${noiseLevel}/10\n`;
         } else if (isNoiseComplaint) {
@@ -350,9 +350,13 @@ function generateFloorReport(building, floor, wing) {
         }
     }
 
-    // Construct the report for the common room
-    if (peopleInCommonRoom > 0 || activities.length > 0) {
-        report += `Common Room: ${peopleInCommonRoom} people in room (${activities.join(', ')})\n`;
+    // Construct the report for the common rooms
+    if (peopleInNorthCommonRoom > 0 || northActivities.length > 0) {
+        report += `North Common Room: ${peopleInNorthCommonRoom} people in room ${northActivities.join(', ')}\n`;
+    }
+
+    if (peopleInSouthCommonRoom > 0 || southActivities.length > 0) {
+        report += `South Common Room: ${peopleInSouthCommonRoom} people in room ${southActivities.join(', ')}\n`;
     }
 
     // Add additional comments if present
@@ -360,10 +364,26 @@ function generateFloorReport(building, floor, wing) {
         report += `Additional Comments: ${additionalComments}\n`;
     }
 
-    report += `\n`; // Add space after each wing
+    report += `\n`; // Add space after each floor
     return report;
 }
 
+// Function to generate the report for Edwards Hall
+function generateEdwardsReport() {
+    let report = `Edwards Hall:\n\n`;
+    const floors = ['3rd', '2nd', '1st'];
+    const basement = 'Basement';
+
+    floors.forEach(floor => {
+        report += generateEdwardsFloorReport('Edwards', floor);
+        report += `\n`; // Add space between floors
+    });
+
+    report += generateBasementReport('Edwards', basement);
+    report += `\n`; // Add space after basements
+
+    return report;
+}
 
 // Function to generate the floor report for each floor in Edwards Hall
 function generateEdwardsFloorReport(building, floor) {
@@ -469,7 +489,7 @@ function generateEdwardsFloorReport(building, floor) {
     // Construct the report for specific rooms
     if (floor === '2nd') {
         if (peopleInKitchen > 0 || kitchenActivities.length > 0) {
-            report += `Kitchen 226: ${peopleInKitchen} people in room (${kitchenActivities.join(', ')})\n`;
+            report += `Kitchen 226: ${peopleInKitchen} people in room ${kitchenActivities.join(', ')}\n`;
             // Include Additional Comments if present
             if (additionalComments2) {
                 report += `Additional Comments: ${additionalComments2}\n`;
@@ -477,10 +497,10 @@ function generateEdwardsFloorReport(building, floor) {
         }
     } else if (floor === '1st') {
         if (peopleInCommonRoom108 > 0 || commonRoom108Activities.length > 0) {
-            report += `Common Room 108: ${peopleInCommonRoom108} people in room (${commonRoom108Activities.join(', ')})\n`;
+            report += `Common Room 108: ${peopleInCommonRoom108} people in room ${commonRoom108Activities.join(', ')}\n`;
         }
         if (peopleInCommonRoom115 > 0 || commonRoom115Activities.length > 0) {
-            report += `Common Room 115: ${peopleInCommonRoom115} people in room (${commonRoom115Activities.join(', ')})\n`;
+            report += `Common Room 115: ${peopleInCommonRoom115} people in room ${commonRoom115Activities.join(', ')}\n`;
         }
         if (additionalComments1) {
             report += `Additional Comments: ${additionalComments1}\n`;
@@ -495,8 +515,6 @@ function generateEdwardsFloorReport(building, floor) {
     report += `\n`; // Add space after each floor
     return report;
 }
-
-
 
 // Function to generate the basement report for each building
 function generateBasementReport(building, basement) {
@@ -538,7 +556,7 @@ function generateBasementReport(building, basement) {
         const additionalCommentsInput = document.getElementById('basementComments');
         const additionalComments = additionalCommentsInput ? additionalCommentsInput.value.trim() : '';
 
-        report += `Ravine Room: ${ravineRoomPeople} people in room (${ravineActivities.join(', ')})\n`;
+        report += `Ravine Room: ${ravineRoomPeople} people in room ${ravineActivities.join(', ')}\n`;
         report += `Study Room B111: ${studyRoomB111Status}\n`;
         report += `Study Room B112: ${studyRoomB112Status}\n`;
         report += `Laundry Room: ${laundryRoomPeople} people in room\n`;
@@ -612,13 +630,13 @@ function generateBasementReport(building, basement) {
         const additionalCommentsInputEdwards = document.getElementById('basementCommentsEdwards');
         const additionalCommentsEdwards = additionalCommentsInputEdwards ? additionalCommentsInputEdwards.value.trim() : '';
 
-        report += `Games Room: ${gamesRoomPeople} people in room (${gamesActivities.join(', ')})\n`;
+        report += `Games Room: ${gamesRoomPeople} people in room ${gamesActivities.join(', ')}\n`;
         report += `Study Room B105: ${studyRoomB105Status}\n`;
         report += `Study Room B106: ${studyRoomB106Status}\n`;
         report += `Study Room B102: ${studyRoomB102Status}\n`;
         report += `Laundry Room: ${laundryRoomPeople} people in room\n`;
-        report += `Kitchen: ${kitchenPeople} people in room (${kitchenActivities.join(', ')})\n`;
-        report += `Kitchenette: ${kitchenettePeople} people in room (${kitchenetteActivities.join(', ')})\n`;
+        report += `Kitchen: ${kitchenPeople} people in room ${kitchenActivities.join(', ')}\n`;
+        report += `Kitchenette: ${kitchenettePeople} people in room ${kitchenetteActivities.join(', ')}\n`;
 
         // Include Additional Comments if present for Edwards Basement
         if (additionalCommentsEdwards) {
@@ -629,59 +647,3 @@ function generateBasementReport(building, basement) {
     report += `\n`; // Add space after basement section
     return report;
 }
-
-// Function to save form state in local storage
-function saveFormState() {
-    const formData = new FormData(document.querySelector('form'));
-    for (let [key, value] of formData.entries()) {
-        localStorage.setItem(key, value);
-    }
-
-    // Save the start and stop time as well
-    if (startTime) localStorage.setItem('startTime', startTime.toISOString());
-    if (stopTime) localStorage.setItem('stopTime', stopTime.toISOString());
-    if (duration) localStorage.setItem('duration', duration);
-}
-
-// Function to load form state from local storage
-function loadFormState() {
-    const formElements = document.querySelectorAll('input, textarea');
-    formElements.forEach(element => {
-        const value = localStorage.getItem(element.id);
-        if (value !== null) {
-            element.value = value;
-            if (element.type === 'checkbox') {
-                element.checked = value === 'true';
-            }
-        }
-    });
-
-    // Load the start and stop time if they exist
-    const storedStartTime = localStorage.getItem('startTime');
-    const storedStopTime = localStorage.getItem('stopTime');
-    const storedDuration = localStorage.getItem('duration');
-    if (storedStartTime) startTime = new Date(storedStartTime);
-    if (storedStopTime) stopTime = new Date(storedStopTime);
-    if (storedDuration) duration = parseInt(storedDuration);
-
-    // If there is a stored start time, show the footer and stop button
-    if (startTime) {
-        document.getElementById('footerSection').classList.remove('hidden');
-        document.getElementById('stopSweepBtn').classList.remove('hidden');
-        document.getElementById('startSweepBtn').style.backgroundColor = 'green';
-    }
-
-    // If there is a stored stop time, hide the stop button and show the copy button
-    if (stopTime) {
-        document.getElementById('stopSweepBtn').classList.add('hidden');
-        document.getElementById('copyReportBtn').classList.remove('hidden');
-    }
-}
-
-// Save form state on change
-document.querySelectorAll('input, textarea').forEach(element => {
-    element.addEventListener('change', saveFormState);
-});
-
-// Load form state on page load
-window.onload = loadFormState;

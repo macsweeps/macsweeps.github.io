@@ -5,128 +5,63 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sweep Tracker</title>
     <link rel="stylesheet" href="styles.css">
-    <style>
-        /* Additional styles for responsive header */
-        .header {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            background-color: #007bff;
-            padding: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            z-index: 1000;
-            transition: top 0.3s;
-        }
-
-        .header.hidden {
-            top: -100px; /* Hide the header when scrolling */
-        }
-
-        .menu-icon {
-            display: none;
-            font-size: 24px;
-            cursor: pointer;
-            color: white;
-        }
-
-        .navigation-buttons {
-            display: flex;
-            gap: 10px;
-        }
-
-        .header-buttons {
-            display: flex;
-            gap: 10px;
-        }
-
-        @media (max-width: 768px) {
-            .navigation-buttons, .header-buttons {
-                display: none;
-            }
-
-            .menu-icon {
-                display: block;
-            }
-
-            .header.show-menu .navigation-buttons,
-            .header.show-menu .header-buttons {
-                display: flex;
-                flex-direction: column;
-                background-color: #007bff;
-                position: absolute;
-                top: 40px;
-                width: 100%;
-                left: 0;
-                padding: 10px;
-            }
-        }
-    </style>
 </head>
 <body>
     <!-- Header Section with Navigation Buttons -->
-    <header class="header" id="mainHeader">
-        <div>
-            <h1>Hedwards Sweeps</h1>
-        </div>
-        <div class="navigation-buttons">
-            <!-- Hedden Floors -->
-            <button onclick="scrollToSection('hedden-5th-floor')">H5</button>
-            <button onclick="scrollToSection('hedden-4th-floor')">H4</button>
-            <button onclick="scrollToSection('hedden-3rd-floor')">H3</button>
-            <button onclick="scrollToSection('hedden-2nd-floor')">H2</button>
-            <button onclick="scrollToSection('hedden-1st-floor')">H1</button>
-            <button onclick="scrollToSection('hedden-basement')">HB</button>
-        </div>
-        <div class="navigation-buttons">
-            <button onclick="scrollToSection('edwards-3rd-floor')">E3</button>
-            <button onclick="scrollToSection('edwards-2nd-floor')">E2</button>
-            <button onclick="scrollToSection('edwards-1st-floor')">E1</button>
-            <button onclick="scrollToSection('edwards-basement')">EB</button>
-        </div>
-    </header>
-
+    <!-- Overlay -->
     <div id="overlay" class="overlay">
+        <h1>MacSweeps: Hedwards</h1>
         <button id="startSweepOverlayBtn" onclick="startSweep()">Start Sweep</button>
     </div>
 
-    <!-- Main Content Section -->
-    <div class="container" id="floor-container" style="margin-top: 100px;">
-
-        <!-- Hedden Floors -->
-        <div class="section" id="hedden-5th-floor">
-            <h2>Hedden: 5th Floor</h2>
-            <!-- North Wing -->
-            <div class="wing-section">
-                <h3>North Wing</h3>
+    <div class="layout">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar" id="sidebar">
+            <ul>
+                <li><button onclick="scrollToFloor('hedden-5th-floor')">H5</button></li>
+                <li><button onclick="scrollToFloor('hedden-4th-floor')">H4</button></li>
+                <li><button onclick="scrollToFloor('hedden-3rd-floor')">H3</button></li>
+                <li><button onclick="scrollToFloor('hedden-2nd-floor')">H2</button></li>
+                <li><button onclick="scrollToFloor('hedden-1st-floor')">H1</button></li>
+                <li><button onclick="scrollToFloor('hedden-basement')">HB</button></li>
+                <li><button onclick="scrollToFloor('edwards-3rd-floor')">E3</button></li>
+                <li><button onclick="scrollToFloor('edwards-2nd-floor')">E2</button></li>
+                <li><button onclick="scrollToFloor('edwards-1st-floor')">E1</button></li>
+                <li><button onclick="scrollToFloor('edwards-basement')">EB</button></li>
+                <li><button id="stopSweepBtn" onclick="stopSweep()">End Sweep</button></li>
+                <li><button id="copyReportBtn" class="hidden primary-button" onclick="copyReport()" style="display: none;">Copy to Clipboard</button></li>
+            </ul>
+        </nav>
+        <!-- Main Content Section -->
+        <div class="main-container" id="main-container">
+            <div class="floor-container" id="hedden-5th-floor">
+                <h2>Hedden: 5th Floor</h2>
                 <div class="section">
                     <p><strong>Is the hallway clear?</strong></p>
-                    <button id="clearBtn5thNorthHedden" onclick="toggleClear('clear', '5thNorthHedden')">Clear</button>
-                    <button id="notClearBtn5thNorthHedden" onclick="toggleClear('notClear', '5thNorthHedden')">Not Clear</button>
-                    <div id="hallwayPeopleInput5thNorthHedden" class="hidden">
-                        <label for="hallwayPeople5thNorthHedden"><strong>People in hallway:</strong></label>
-                        <input type="number" id="hallwayPeople5thNorthHedden" placeholder="Number" oninput="updateNoiseButton('5thNorthHedden')">
+                    <button id="clearBtn5thHedden" onclick="toggleClear('clear', '5thHedden')">Clear</button>
+                    <button id="notClearBtn5thHedden" onclick="toggleClear('notClear', '5thHedden')">Not Clear</button>
+                    <div id="hallwayPeopleInput5thHedden" class="hidden">
+                        <input type="number" id="hallwayPeople5thHedden" placeholder="Number of people in hallway" oninput="updateNoiseButton('5thHedden')">
                     </div>
                 </div>
 
                 <div class="section">
                     <p><strong>Noise Level:</strong></p>
-                    <button id="quietBtn5thNorthHedden" onclick="toggleNoise('quiet', '5thNorthHedden')">Quiet</button>
-                    <button id="noisyBtn5thNorthHedden" class="hidden" onclick="toggleNoise('noisy', '5thNorthHedden')">Noisy</button>
-                    <button id="noiseComplaintBtn5thNorthHedden" onclick="toggleNoise('noiseComplaint', '5thNorthHedden')">Noise Complaint</button>
-                    <div id="noiseLevelInput5thNorthHedden" class="hidden">
-                        <label for="noiseLevel5thNorthHedden"><strong>Noise Level:</strong></label>
-                        <input type="range" id="noiseLevel5thNorthHedden" min="0" max="10" step="1" value="0">
+                    <button id="quietBtn5thHedden" onclick="toggleNoise('quiet', '5thHedden')">Quiet</button>
+                    <button id="noisyBtn5thHedden" class="hidden" onclick="toggleNoise('noisy', '5thHedden')">Noisy</button>
+                    <button id="noiseComplaintBtn5thHedden" onclick="toggleNoise('noiseComplaint', '5thHedden')">Noise Complaint</button>
+                    <div id="noiseLevelInput5thHedden" class="hidden">
+                        <label for="noiseLevel5thHedden"><strong>Noise Level:</strong></label>
+                        <input type="range" id="noiseLevel5thHedden" min="0" max="10" step="1" value="0">
                     </div>
-                    <div id="noiseComplaintForm5thNorthHedden" class="hidden">
-                        <input type="text" id="complaintRoomNumber5thNorthHedden" placeholder="Room Number">
-                        <input type="text" id="complaintComments5thNorthHedden" placeholder="Additional Comments">
+                    <div id="noiseComplaintForm5thHedden" class="hidden">
+                        <input type="text" id="complaintRoomNumber5thHedden" placeholder="Room Number">
+                        <input type="text" id="complaintComments5thHedden" placeholder="Additional Comments">
                     </div>
                 </div>
 
                 <div class="room-section">
-                    <h4><strong>Common Room/Kitchen</strong></h4>
+                    <h4><strong>North Common Room/Kitchen</strong></h4>
                     <input type="number" id="commonRoomPeople5thNorthHedden" placeholder="0" value="0" min="0" oninput="showCommonRoomOptions('5thNorthHedden')">
                     <div id="commonRoomOptions5thNorthHedden" class="hidden">
                         <label><input type="checkbox" value="studying"> Studying</label>
@@ -137,42 +72,8 @@
                     </div>
                 </div>
 
-                <div class="section">
-                    <h4><strong>Additional Comments</strong></h4>
-                    <textarea id="comments5thNorthHedden" placeholder="Enter any additional comments here..."></textarea>
-                </div>
-            </div>
-
-            <!-- South Wing -->
-            <div class="wing-section">
-                <h3>South Wing</h3>
-                <div class="section">
-                    <p><strong>Is the hallway clear?</strong></p>
-                    <button id="clearBtn5thSouthHedden" onclick="toggleClear('clear', '5thSouthHedden')">Clear</button>
-                    <button id="notClearBtn5thSouthHedden" onclick="toggleClear('notClear', '5thSouthHedden')">Not Clear</button>
-                    <div id="hallwayPeopleInput5thSouthHedden" class="hidden">
-                        <label for="hallwayPeople5thSouthHedden"><strong>People in hallway:</strong></label>
-                        <input type="number" id="hallwayPeople5thSouthHedden" placeholder="Number" oninput="updateNoiseButton('5thSouthHedden')">
-                    </div>
-                </div>
-
-                <div class="section">
-                    <p><strong>Noise Level:</strong></p>
-                    <button id="quietBtn5thSouthHedden" onclick="toggleNoise('quiet', '5thSouthHedden')">Quiet</button>
-                    <button id="noisyBtn5thSouthHedden" class="hidden" onclick="toggleNoise('noisy', '5thSouthHedden')">Noisy</button>
-                    <button id="noiseComplaintBtn5thSouthHedden" onclick="toggleNoise('noiseComplaint', '5thSouthHedden')">Noise Complaint</button>
-                    <div id="noiseLevelInput5thSouthHedden" class="hidden">
-                        <label for="noiseLevel5thSouthHedden"><strong>Noise Level:</strong></label>
-                        <input type="range" id="noiseLevel5thSouthHedden" min="0" max="10" step="1" value="0">
-                    </div>
-                    <div id="noiseComplaintForm5thSouthHedden" class="hidden">
-                        <input type="text" id="complaintRoomNumber5thSouthHedden" placeholder="Room Number">
-                        <input type="text" id="complaintComments5thSouthHedden" placeholder="Additional Comments">
-                    </div>
-                </div>
-
                 <div class="room-section">
-                    <h4><strong>Common Room/Kitchen</strong></h4>
+                    <h4><strong>South Common Room/Kitchen</strong></h4>
                     <input type="number" id="commonRoomPeople5thSouthHedden" placeholder="0" value="0" min="0" oninput="showCommonRoomOptions('5thSouthHedden')">
                     <div id="commonRoomOptions5thSouthHedden" class="hidden">
                         <label><input type="checkbox" value="studying"> Studying</label>
@@ -182,49 +83,40 @@
                         <label><input type="checkbox" value="hanging out"> Hanging Out</label>
                     </div>
                 </div>
-
                 <div class="section">
-                    <h4><strong>Additional Comments</strong></h4>
-                    <textarea id="comments5thSouthHedden" placeholder="Enter any additional comments here..."></textarea>
+                    <h3><strong>Additional Comments</strong></h3>
+                    <textarea id="comments5thHedden" placeholder="Enter any additional comments here..."></textarea>
                 </div>
             </div>
-        </div>
 
-        <!-- Repeat similar sections for all Hedden and Edwards floors -->
-
-        <!-- Example for Hedden 4th Floor -->
-        <div class="section" id="hedden-4th-floor">
-            <h2>Hedden: 4th Floor</h2>
-            <!-- North Wing -->
-            <div class="wing-section">
-                <h3>North Wing</h3>
+            <div class="floor-container" id="hedden-4th-floor">
+                <h2>Hedden: 4th Floor</h2>
                 <div class="section">
                     <p><strong>Is the hallway clear?</strong></p>
-                    <button id="clearBtn4thNorthHedden" onclick="toggleClear('clear', '4thNorthHedden')">Clear</button>
-                    <button id="notClearBtn4thNorthHedden" onclick="toggleClear('notClear', '4thNorthHedden')">Not Clear</button>
-                    <div id="hallwayPeopleInput4thNorthHedden" class="hidden">
-                        <label for="hallwayPeople4thNorthHedden"><strong>People in hallway:</strong></label>
-                        <input type="number" id="hallwayPeople4thNorthHedden" placeholder="Number" oninput="updateNoiseButton('4thNorthHedden')">
+                    <button id="clearBtn4thHedden" onclick="toggleClear('clear', '4thHedden')">Clear</button>
+                    <button id="notClearBtn4thHedden" onclick="toggleClear('notClear', '4thHedden')">Not Clear</button>
+                    <div id="hallwayPeopleInput4thHedden" class="hidden">
+                        <input type="number" id="hallwayPeople4thHedden" placeholder="Number of people in hallway" oninput="updateNoiseButton('4thHedden')">
                     </div>
                 </div>
 
                 <div class="section">
                     <p><strong>Noise Level:</strong></p>
-                    <button id="quietBtn4thNorthHedden" onclick="toggleNoise('quiet', '4thNorthHedden')">Quiet</button>
-                    <button id="noisyBtn4thNorthHedden" class="hidden" onclick="toggleNoise('noisy', '4thNorthHedden')">Noisy</button>
-                    <button id="noiseComplaintBtn4thNorthHedden" onclick="toggleNoise('noiseComplaint', '4thNorthHedden')">Noise Complaint</button>
-                    <div id="noiseLevelInput4thNorthHedden" class="hidden">
-                        <label for="noiseLevel4thNorthHedden"><strong>Noise Level:</strong></label>
-                        <input type="range" id="noiseLevel4thNorthHedden" min="0" max="10" step="1" value="0">
+                    <button id="quietBtn4thHedden" onclick="toggleNoise('quiet', '4thHedden')">Quiet</button>
+                    <button id="noisyBtn4thHedden" class="hidden" onclick="toggleNoise('noisy', '4thHedden')">Noisy</button>
+                    <button id="noiseComplaintBtn4thHedden" onclick="toggleNoise('noiseComplaint', '4thHedden')">Noise Complaint</button>
+                    <div id="noiseLevelInput4thHedden" class="hidden">
+                        <label for="noiseLevel4thHedden"><strong>Noise Level:</strong></label>
+                        <input type="range" id="noiseLevel4thHedden" min="0" max="10" step="1" value="0">
                     </div>
-                    <div id="noiseComplaintForm4thNorthHedden" class="hidden">
-                        <input type="text" id="complaintRoomNumber4thNorthHedden" placeholder="Room Number">
-                        <input type="text" id="complaintComments4thNorthHedden" placeholder="Additional Comments">
+                    <div id="noiseComplaintForm4thHedden" class="hidden">
+                        <input type="text" id="complaintRoomNumber4thHedden" placeholder="Room Number">
+                        <input type="text" id="complaintComments4thHedden" placeholder="Additional Comments">
                     </div>
                 </div>
 
                 <div class="room-section">
-                    <h4><strong>Common Room/Kitchen</strong></h4>
+                    <h4><strong>North Common Room/Kitchen</strong></h4>
                     <input type="number" id="commonRoomPeople4thNorthHedden" placeholder="0" value="0" min="0" oninput="showCommonRoomOptions('4thNorthHedden')">
                     <div id="commonRoomOptions4thNorthHedden" class="hidden">
                         <label><input type="checkbox" value="studying"> Studying</label>
@@ -235,42 +127,8 @@
                     </div>
                 </div>
 
-                <div class="section">
-                    <h4><strong>Additional Comments</strong></h4>
-                    <textarea id="comments4thNorthHedden" placeholder="Enter any additional comments here..."></textarea>
-                </div>
-            </div>
-
-            <!-- South Wing -->
-            <div class="wing-section">
-                <h3>South Wing</h3>
-                <div class="section">
-                    <p><strong>Is the hallway clear?</strong></p>
-                    <button id="clearBtn4thSouthHedden" onclick="toggleClear('clear', '4thSouthHedden')">Clear</button>
-                    <button id="notClearBtn4thSouthHedden" onclick="toggleClear('notClear', '4thSouthHedden')">Not Clear</button>
-                    <div id="hallwayPeopleInput4thSouthHedden" class="hidden">
-                        <label for="hallwayPeople4thSouthHedden"><strong>People in hallway:</strong></label>
-                        <input type="number" id="hallwayPeople4thSouthHedden" placeholder="Number" oninput="updateNoiseButton('4thSouthHedden')">
-                    </div>
-                </div>
-
-                <div class="section">
-                    <p><strong>Noise Level:</strong></p>
-                    <button id="quietBtn4thSouthHedden" onclick="toggleNoise('quiet', '4thSouthHedden')">Quiet</button>
-                    <button id="noisyBtn4thSouthHedden" class="hidden" onclick="toggleNoise('noisy', '4thSouthHedden')">Noisy</button>
-                    <button id="noiseComplaintBtn4thSouthHedden" onclick="toggleNoise('noiseComplaint', '4thSouthHedden')">Noise Complaint</button>
-                    <div id="noiseLevelInput4thSouthHedden" class="hidden">
-                        <label for="noiseLevel4thSouthHedden"><strong>Noise Level:</strong></label>
-                        <input type="range" id="noiseLevel4thSouthHedden" min="0" max="10" step="1" value="0">
-                    </div>
-                    <div id="noiseComplaintForm4thSouthHedden" class="hidden">
-                        <input type="text" id="complaintRoomNumber4thSouthHedden" placeholder="Room Number">
-                        <input type="text" id="complaintComments4thSouthHedden" placeholder="Additional Comments">
-                    </div>
-                </div>
-
                 <div class="room-section">
-                    <h4><strong>Common Room/Kitchen</strong></h4>
+                    <h4><strong>South Common Room/Kitchen</strong></h4>
                     <input type="number" id="commonRoomPeople4thSouthHedden" placeholder="0" value="0" min="0" oninput="showCommonRoomOptions('4thSouthHedden')">
                     <div id="commonRoomOptions4thSouthHedden" class="hidden">
                         <label><input type="checkbox" value="studying"> Studying</label>
@@ -280,49 +138,40 @@
                         <label><input type="checkbox" value="hanging out"> Hanging Out</label>
                     </div>
                 </div>
-
                 <div class="section">
-                    <h4><strong>Additional Comments</strong></h4>
-                    <textarea id="comments4thSouthHedden" placeholder="Enter any additional comments here..."></textarea>
+                    <h3><strong>Additional Comments</strong></h3>
+                    <textarea id="comments4thHedden" placeholder="Enter any additional comments here..."></textarea>
                 </div>
             </div>
-        </div>
 
-        <!-- Repeat similar sections for all Hedden and Edwards floors -->
-
-        <!-- Example for Hedden 3rd Floor -->
-        <div class="section" id="hedden-3rd-floor">
-            <h2>Hedden: 3rd Floor</h2>
-            <!-- North Wing -->
-            <div class="wing-section">
-                <h3>North Wing</h3>
+            <div class="floor-container" id="hedden-3rd-floor">
+                <h2>Hedden: 3rd Floor</h2>
                 <div class="section">
                     <p><strong>Is the hallway clear?</strong></p>
-                    <button id="clearBtn3rdNorthHedden" onclick="toggleClear('clear', '3rdNorthHedden')">Clear</button>
-                    <button id="notClearBtn3rdNorthHedden" onclick="toggleClear('notClear', '3rdNorthHedden')">Not Clear</button>
-                    <div id="hallwayPeopleInput3rdNorthHedden" class="hidden">
-                        <label for="hallwayPeople3rdNorthHedden"><strong>People in hallway:</strong></label>
-                        <input type="number" id="hallwayPeople3rdNorthHedden" placeholder="Number" oninput="updateNoiseButton('3rdNorthHedden')">
+                    <button id="clearBtn3rdHedden" onclick="toggleClear('clear', '3rdHedden')">Clear</button>
+                    <button id="notClearBtn3rdHedden" onclick="toggleClear('notClear', '3rdHedden')">Not Clear</button>
+                    <div id="hallwayPeopleInput3rdHedden" class="hidden">
+                        <input type="number" id="hallwayPeople3rdHedden" placeholder="Number of people in hallway" oninput="updateNoiseButton('3rdHedden')">
                     </div>
                 </div>
 
                 <div class="section">
                     <p><strong>Noise Level:</strong></p>
-                    <button id="quietBtn3rdNorthHedden" onclick="toggleNoise('quiet', '3rdNorthHedden')">Quiet</button>
-                    <button id="noisyBtn3rdNorthHedden" class="hidden" onclick="toggleNoise('noisy', '3rdNorthHedden')">Noisy</button>
-                    <button id="noiseComplaintBtn3rdNorthHedden" onclick="toggleNoise('noiseComplaint', '3rdNorthHedden')">Noise Complaint</button>
-                    <div id="noiseLevelInput3rdNorthHedden" class="hidden">
-                        <label for="noiseLevel3rdNorthHedden"><strong>Noise Level:</strong></label>
-                        <input type="range" id="noiseLevel3rdNorthHedden" min="0" max="10" step="1" value="0">
+                    <button id="quietBtn3rdHedden" onclick="toggleNoise('quiet', '3rdHedden')">Quiet</button>
+                    <button id="noisyBtn3rdHedden" class="hidden" onclick="toggleNoise('noisy', '3rdHedden')">Noisy</button>
+                    <button id="noiseComplaintBtn3rdHedden" onclick="toggleNoise('noiseComplaint', '3rdHedden')">Noise Complaint</button>
+                    <div id="noiseLevelInput3rdHedden" class="hidden">
+                        <label for="noiseLevel3rdHedden"><strong>Noise Level:</strong></label>
+                        <input type="range" id="noiseLevel3rdHedden" min="0" max="10" step="1" value="0">
                     </div>
-                    <div id="noiseComplaintForm3rdNorthHedden" class="hidden">
-                        <input type="text" id="complaintRoomNumber3rdNorthHedden" placeholder="Room Number">
-                        <input type="text" id="complaintComments3rdNorthHedden" placeholder="Additional Comments">
+                    <div id="noiseComplaintForm3rdHedden" class="hidden">
+                        <input type="text" id="complaintRoomNumber3rdHedden" placeholder="Room Number">
+                        <input type="text" id="complaintComments3rdHedden" placeholder="Additional Comments">
                     </div>
                 </div>
 
                 <div class="room-section">
-                    <h4><strong>Common Room/Kitchen</strong></h4>
+                    <h4><strong>North Common Room/Kitchen</strong></h4>
                     <input type="number" id="commonRoomPeople3rdNorthHedden" placeholder="0" value="0" min="0" oninput="showCommonRoomOptions('3rdNorthHedden')">
                     <div id="commonRoomOptions3rdNorthHedden" class="hidden">
                         <label><input type="checkbox" value="studying"> Studying</label>
@@ -333,42 +182,8 @@
                     </div>
                 </div>
 
-                <div class="section">
-                    <h4><strong>Additional Comments</strong></h4>
-                    <textarea id="comments3rdNorthHedden" placeholder="Enter any additional comments here..."></textarea>
-                </div>
-            </div>
-
-            <!-- South Wing -->
-            <div class="wing-section">
-                <h3>South Wing</h3>
-                <div class="section">
-                    <p><strong>Is the hallway clear?</strong></p>
-                    <button id="clearBtn3rdSouthHedden" onclick="toggleClear('clear', '3rdSouthHedden')">Clear</button>
-                    <button id="notClearBtn3rdSouthHedden" onclick="toggleClear('notClear', '3rdSouthHedden')">Not Clear</button>
-                    <div id="hallwayPeopleInput3rdSouthHedden" class="hidden">
-                        <label for="hallwayPeople3rdSouthHedden"><strong>People in hallway:</strong></label>
-                        <input type="number" id="hallwayPeople3rdSouthHedden" placeholder="Number" oninput="updateNoiseButton('3rdSouthHedden')">
-                    </div>
-                </div>
-
-                <div class="section">
-                    <p><strong>Noise Level:</strong></p>
-                    <button id="quietBtn3rdSouthHedden" onclick="toggleNoise('quiet', '3rdSouthHedden')">Quiet</button>
-                    <button id="noisyBtn3rdSouthHedden" class="hidden" onclick="toggleNoise('noisy', '3rdSouthHedden')">Noisy</button>
-                    <button id="noiseComplaintBtn3rdSouthHedden" onclick="toggleNoise('noiseComplaint', '3rdSouthHedden')">Noise Complaint</button>
-                    <div id="noiseLevelInput3rdSouthHedden" class="hidden">
-                        <label for="noiseLevel3rdSouthHedden"><strong>Noise Level:</strong></label>
-                        <input type="range" id="noiseLevel3rdSouthHedden" min="0" max="10" step="1" value="0">
-                    </div>
-                    <div id="noiseComplaintForm3rdSouthHedden" class="hidden">
-                        <input type="text" id="complaintRoomNumber3rdSouthHedden" placeholder="Room Number">
-                        <input type="text" id="complaintComments3rdSouthHedden" placeholder="Additional Comments">
-                    </div>
-                </div>
-
                 <div class="room-section">
-                    <h4><strong>Common Room/Kitchen</strong></h4>
+                    <h4><strong>South Common Room/Kitchen</strong></h4>
                     <input type="number" id="commonRoomPeople3rdSouthHedden" placeholder="0" value="0" min="0" oninput="showCommonRoomOptions('3rdSouthHedden')">
                     <div id="commonRoomOptions3rdSouthHedden" class="hidden">
                         <label><input type="checkbox" value="studying"> Studying</label>
@@ -378,46 +193,40 @@
                         <label><input type="checkbox" value="hanging out"> Hanging Out</label>
                     </div>
                 </div>
-
                 <div class="section">
-                    <h4><strong>Additional Comments</strong></h4>
-                    <textarea id="comments3rdSouthHedden" placeholder="Enter any additional comments here..."></textarea>
+                    <h3><strong>Additional Comments</strong></h3>
+                    <textarea id="comments3rdHedden" placeholder="Enter any additional comments here..."></textarea>
                 </div>
             </div>
-        </div>
 
-        <div class="section" id="hedden-2nd-floor">
-            <h2>Hedden: 2nd Floor</h2>
-            <!-- North Wing -->
-            <div class="wing-section">
-                <h3>North Wing</h3>
+            <div class="floor-container" id="hedden-2nd-floor">
+                <h2>Hedden: 2nd Floor</h2>
                 <div class="section">
                     <p><strong>Is the hallway clear?</strong></p>
-                    <button id="clearBtn2ndNorthHedden" onclick="toggleClear('clear', '2ndNorthHedden')">Clear</button>
-                    <button id="notClearBtn2ndNorthHedden" onclick="toggleClear('notClear', '2ndNorthHedden')">Not Clear</button>
-                    <div id="hallwayPeopleInput2ndNorthHedden" class="hidden">
-                        <label for="hallwayPeople2ndNorthHedden"><strong>People in hallway:</strong></label>
-                        <input type="number" id="hallwayPeople2ndNorthHedden" placeholder="Number" oninput="updateNoiseButton('2ndNorthHedden')">
+                    <button id="clearBtn2ndHedden" onclick="toggleClear('clear', '2ndHedden')">Clear</button>
+                    <button id="notClearBtn2ndHedden" onclick="toggleClear('notClear', '2ndHedden')">Not Clear</button>
+                    <div id="hallwayPeopleInput2ndHedden" class="hidden">
+                        <input type="number" id="hallwayPeople2ndHedden" placeholder="Number of people in hallway" oninput="updateNoiseButton('2ndHedden')">
                     </div>
                 </div>
 
                 <div class="section">
                     <p><strong>Noise Level:</strong></p>
-                    <button id="quietBtn2ndNorthHedden" onclick="toggleNoise('quiet', '2ndNorthHedden')">Quiet</button>
-                    <button id="noisyBtn2ndNorthHedden" class="hidden" onclick="toggleNoise('noisy', '2ndNorthHedden')">Noisy</button>
-                    <button id="noiseComplaintBtn2ndNorthHedden" onclick="toggleNoise('noiseComplaint', '2ndNorthHedden')">Noise Complaint</button>
-                    <div id="noiseLevelInput2ndNorthHedden" class="hidden">
-                        <label for="noiseLevel2ndNorthHedden"><strong>Noise Level:</strong></label>
-                        <input type="range" id="noiseLevel2ndNorthHedden" min="0" max="10" step="1" value="0">
+                    <button id="quietBtn2ndHedden" onclick="toggleNoise('quiet', '2ndHedden')">Quiet</button>
+                    <button id="noisyBtn2ndHedden" class="hidden" onclick="toggleNoise('noisy', '2ndHedden')">Noisy</button>
+                    <button id="noiseComplaintBtn2ndHedden" onclick="toggleNoise('noiseComplaint', '2ndHedden')">Noise Complaint</button>
+                    <div id="noiseLevelInput2ndHedden" class="hidden">
+                        <label for="noiseLevel2ndHedden"><strong>Noise Level:</strong></label>
+                        <input type="range" id="noiseLevel2ndHedden" min="0" max="10" step="1" value="0">
                     </div>
-                    <div id="noiseComplaintForm2ndNorthHedden" class="hidden">
-                        <input type="text" id="complaintRoomNumber2ndNorthHedden" placeholder="Room Number">
-                        <input type="text" id="complaintComments2ndNorthHedden" placeholder="Additional Comments">
+                    <div id="noiseComplaintForm2ndHedden" class="hidden">
+                        <input type="text" id="complaintRoomNumber2ndHedden" placeholder="Room Number">
+                        <input type="text" id="complaintComments2ndHedden" placeholder="Additional Comments">
                     </div>
                 </div>
 
                 <div class="room-section">
-                    <h4><strong>Common Room/Kitchen</strong></h4>
+                    <h4><strong>North Common Room/Kitchen</strong></h4>
                     <input type="number" id="commonRoomPeople2ndNorthHedden" placeholder="0" value="0" min="0" oninput="showCommonRoomOptions('2ndNorthHedden')">
                     <div id="commonRoomOptions2ndNorthHedden" class="hidden">
                         <label><input type="checkbox" value="studying"> Studying</label>
@@ -428,42 +237,8 @@
                     </div>
                 </div>
 
-                <div class="section">
-                    <h4><strong>Additional Comments</strong></h4>
-                    <textarea id="comments2ndNorthHedden" placeholder="Enter any additional comments here..."></textarea>
-                </div>
-            </div>
-
-            <!-- South Wing -->
-            <div class="wing-section">
-                <h3>South Wing</h3>
-                <div class="section">
-                    <p><strong>Is the hallway clear?</strong></p>
-                    <button id="clearBtn2ndSouthHedden" onclick="toggleClear('clear', '2ndSouthHedden')">Clear</button>
-                    <button id="notClearBtn2ndSouthHedden" onclick="toggleClear('notClear', '2ndSouthHedden')">Not Clear</button>
-                    <div id="hallwayPeopleInput2ndSouthHedden" class="hidden">
-                        <label for="hallwayPeople2ndSouthHedden"><strong>People in hallway:</strong></label>
-                        <input type="number" id="hallwayPeople2ndSouthHedden" placeholder="Number" oninput="updateNoiseButton('2ndSouthHedden')">
-                    </div>
-                </div>
-
-                <div class="section">
-                    <p><strong>Noise Level:</strong></p>
-                    <button id="quietBtn2ndSouthHedden" onclick="toggleNoise('quiet', '2ndSouthHedden')">Quiet</button>
-                    <button id="noisyBtn2ndSouthHedden" class="hidden" onclick="toggleNoise('noisy', '2ndSouthHedden')">Noisy</button>
-                    <button id="noiseComplaintBtn2ndSouthHedden" onclick="toggleNoise('noiseComplaint', '2ndSouthHedden')">Noise Complaint</button>
-                    <div id="noiseLevelInput2ndSouthHedden" class="hidden">
-                        <label for="noiseLevel2ndSouthHedden"><strong>Noise Level:</strong></label>
-                        <input type="range" id="noiseLevel2ndSouthHedden" min="0" max="10" step="1" value="0">
-                    </div>
-                    <div id="noiseComplaintForm2ndSouthHedden" class="hidden">
-                        <input type="text" id="complaintRoomNumber2ndSouthHedden" placeholder="Room Number">
-                        <input type="text" id="complaintComments2ndSouthHedden" placeholder="Additional Comments">
-                    </div>
-                </div>
-
                 <div class="room-section">
-                    <h4><strong>Common Room/Kitchen</strong></h4>
+                    <h4><strong>South Common Room/Kitchen</strong></h4>
                     <input type="number" id="commonRoomPeople2ndSouthHedden" placeholder="0" value="0" min="0" oninput="showCommonRoomOptions('2ndSouthHedden')">
                     <div id="commonRoomOptions2ndSouthHedden" class="hidden">
                         <label><input type="checkbox" value="studying"> Studying</label>
@@ -473,46 +248,40 @@
                         <label><input type="checkbox" value="hanging out"> Hanging Out</label>
                     </div>
                 </div>
-
                 <div class="section">
-                    <h4><strong>Additional Comments</strong></h4>
-                    <textarea id="comments2ndSouthHedden" placeholder="Enter any additional comments here..."></textarea>
+                    <h3><strong>Additional Comments</strong></h3>
+                    <textarea id="comments2ndHedden" placeholder="Enter any additional comments here..."></textarea>
                 </div>
             </div>
-        </div>
 
-        <div class="section" id="hedden-1st-floor">
-            <h2>Hedden: 1st Floor</h2>
-            <!-- North Wing -->
-            <div class="wing-section">
-                <h3>North Wing</h3>
+            <div class="floor-container" id="hedden-1st-floor">
+                <h2>Hedden: 1st Floor</h2>
                 <div class="section">
                     <p><strong>Is the hallway clear?</strong></p>
-                    <button id="clearBtn1stNorthHedden" onclick="toggleClear('clear', '1stNorthHedden')">Clear</button>
-                    <button id="notClearBtn1stNorthHedden" onclick="toggleClear('notClear', '1stNorthHedden')">Not Clear</button>
-                    <div id="hallwayPeopleInput1stNorthHedden" class="hidden">
-                        <label for="hallwayPeople1stNorthHedden"><strong>People in hallway:</strong></label>
-                        <input type="number" id="hallwayPeople1stNorthHedden" placeholder="Number" oninput="updateNoiseButton('1stNorthHedden')">
+                    <button id="clearBtn1stHedden" onclick="toggleClear('clear', '1stHedden')">Clear</button>
+                    <button id="notClearBtn1stHedden" onclick="toggleClear('notClear', '1stHedden')">Not Clear</button>
+                    <div id="hallwayPeopleInput1stHedden" class="hidden">
+                        <input type="number" id="hallwayPeople1stHedden" placeholder="Number of people in hallway" oninput="updateNoiseButton('1stHedden')">
                     </div>
                 </div>
 
                 <div class="section">
                     <p><strong>Noise Level:</strong></p>
-                    <button id="quietBtn1stNorthHedden" onclick="toggleNoise('quiet', '1stNorthHedden')">Quiet</button>
-                    <button id="noisyBtn1stNorthHedden" class="hidden" onclick="toggleNoise('noisy', '1stNorthHedden')">Noisy</button>
-                    <button id="noiseComplaintBtn1stNorthHedden" onclick="toggleNoise('noiseComplaint', '1stNorthHedden')">Noise Complaint</button>
-                    <div id="noiseLevelInput1stNorthHedden" class="hidden">
-                        <label for="noiseLevel1stNorthHedden"><strong>Noise Level:</strong></label>
-                        <input type="range" id="noiseLevel1stNorthHedden" min="0" max="10" step="1" value="0">
+                    <button id="quietBtn1stHedden" onclick="toggleNoise('quiet', '1stHedden')">Quiet</button>
+                    <button id="noisyBtn1stHedden" class="hidden" onclick="toggleNoise('noisy', '1stHedden')">Noisy</button>
+                    <button id="noiseComplaintBtn1stHedden" onclick="toggleNoise('noiseComplaint', '1stHedden')">Noise Complaint</button>
+                    <div id="noiseLevelInput1stHedden" class="hidden">
+                        <label for="noiseLevel1stHedden"><strong>Noise Level:</strong></label>
+                        <input type="range" id="noiseLevel1stHedden" min="0" max="10" step="1" value="0">
                     </div>
-                    <div id="noiseComplaintForm1stNorthHedden" class="hidden">
-                        <input type="text" id="complaintRoomNumber1stNorthHedden" placeholder="Room Number">
-                        <input type="text" id="complaintComments1stNorthHedden" placeholder="Additional Comments">
+                    <div id="noiseComplaintForm1stHedden" class="hidden">
+                        <input type="text" id="complaintRoomNumber1stHedden" placeholder="Room Number">
+                        <input type="text" id="complaintComments1stHedden" placeholder="Additional Comments">
                     </div>
                 </div>
 
                 <div class="room-section">
-                    <h4><strong>Common Room/Kitchen</strong></h4>
+                    <h4><strong>North Common Room/Kitchen</strong></h4>
                     <input type="number" id="commonRoomPeople1stNorthHedden" placeholder="0" value="0" min="0" oninput="showCommonRoomOptions('1stNorthHedden')">
                     <div id="commonRoomOptions1stNorthHedden" class="hidden">
                         <label><input type="checkbox" value="studying"> Studying</label>
@@ -523,42 +292,8 @@
                     </div>
                 </div>
 
-                <div class="section">
-                    <h4><strong>Additional Comments</strong></h4>
-                    <textarea id="comments1stNorthHedden" placeholder="Enter any additional comments here..."></textarea>
-                </div>
-            </div>
-
-            <!-- South Wing -->
-            <div class="wing-section">
-                <h3>South Wing</h3>
-                <div class="section">
-                    <p><strong>Is the hallway clear?</strong></p>
-                    <button id="clearBtn1stSouthHedden" onclick="toggleClear('clear', '1stSouthHedden')">Clear</button>
-                    <button id="notClearBtn1stSouthHedden" onclick="toggleClear('notClear', '1stSouthHedden')">Not Clear</button>
-                    <div id="hallwayPeopleInput1stSouthHedden" class="hidden">
-                        <label for="hallwayPeople1stSouthHedden"><strong>People in hallway:</strong></label>
-                        <input type="number" id="hallwayPeople1stSouthHedden" placeholder="Number" oninput="updateNoiseButton('1stSouthHedden')">
-                    </div>
-                </div>
-
-                <div class="section">
-                    <p><strong>Noise Level:</strong></p>
-                    <button id="quietBtn1stSouthHedden" onclick="toggleNoise('quiet', '1stSouthHedden')">Quiet</button>
-                    <button id="noisyBtn1stSouthHedden" class="hidden" onclick="toggleNoise('noisy', '1stSouthHedden')">Noisy</button>
-                    <button id="noiseComplaintBtn1stSouthHedden" onclick="toggleNoise('noiseComplaint', '1stSouthHedden')">Noise Complaint</button>
-                    <div id="noiseLevelInput1stSouthHedden" class="hidden">
-                        <label for="noiseLevel1stSouthHedden"><strong>Noise Level:</strong></label>
-                        <input type="range" id="noiseLevel1stSouthHedden" min="0" max="10" step="1" value="0">
-                    </div>
-                    <div id="noiseComplaintForm1stSouthHedden" class="hidden">
-                        <input type="text" id="complaintRoomNumber1stSouthHedden" placeholder="Room Number">
-                        <input type="text" id="complaintComments1stSouthHedden" placeholder="Additional Comments">
-                    </div>
-                </div>
-
                 <div class="room-section">
-                    <h4><strong>Common Room/Kitchen</strong></h4>
+                    <h4><strong>South Common Room/Kitchen</strong></h4>
                     <input type="number" id="commonRoomPeople1stSouthHedden" placeholder="0" value="0" min="0" oninput="showCommonRoomOptions('1stSouthHedden')">
                     <div id="commonRoomOptions1stSouthHedden" class="hidden">
                         <label><input type="checkbox" value="studying"> Studying</label>
@@ -568,362 +303,327 @@
                         <label><input type="checkbox" value="hanging out"> Hanging Out</label>
                     </div>
                 </div>
+                <div class="section">
+                    <h3><strong>Additional Comments</strong></h3>
+                    <textarea id="comments1stHedden" placeholder="Enter any additional comments here..."></textarea>
+                </div>
+            </div>
 
+            <div class="floor-container" id="hedden-basement">
+                <h2>Hedden: Basement</h2>
+                <!-- Ravine Room -->
+                <div class="wing-section">
+                    <h3>Ravine Room</h3>
+                    <div class="section">
+                        <label for="ravineRoomPeople"><strong>Number of people in Ravine Room:</strong></label>
+                        <input type="number" id="ravineRoomPeople" placeholder="0" value="0" min="0" oninput="toggleRavineRoomOptions()">
+                    </div>
+                    <div id="ravineRoomOptions" class="hidden">
+                        <label><input type="checkbox" value="watching tv"> Watching TV</label>
+                        <label><input type="checkbox" value="playing ping-pong"> Playing Ping-Pong</label>
+                        <label><input type="checkbox" value="playing pool"> Playing Pool</label>
+                        <label><input type="checkbox" value="hanging out"> Hanging Out</label>
+                        <label><input type="checkbox" value="in kitchen"> In Kitchen</label>
+                        <!-- Add any other options as needed -->
+                    </div>
+                </div>
+
+                <!-- Laundry Room -->
+                <div class="wing-section">
+                    <h3>Laundry Room</h3>
+                    <div class="section">
+                        <label for="laundryRoomPeople"><strong>Number of people in Laundry Room:</strong></label>
+                        <input type="number" id="laundryRoomPeople" placeholder="0" value="0" min="0">
+                    </div>
+                </div>
+
+                <!-- Study Room B111 -->
+                <div class="wing-section">
+                    <h3>Study Room B111</h3>
+                    <div class="section">
+                        <label><strong>Is the study room B111 locked or unlocked?</strong></label>
+                        <button id="lockedBtnB111" onclick="toggleStudyRoom('locked', 'B111')">Locked</button>
+                        <button id="unlockedBtnB111" onclick="toggleStudyRoom('unlocked', 'B111')">Unlocked</button>
+                        <div id="studyRoomB111PeopleInput" class="hidden">
+                            <label for="studyRoomB111People"><strong>Number of people in Study Room B111:</strong></label>
+                            <input type="number" id="studyRoomB111People" placeholder="0" value="0" min="0">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Study Room B112 -->
+                <div class="wing-section">
+                    <h3>Study Room B112</h3>
+                    <div class="section">
+                        <label><strong>Is the study room B112 locked or unlocked?</strong></label>
+                        <button id="lockedBtnB112" onclick="toggleStudyRoom('locked', 'B112')">Locked</button>
+                        <button id="unlockedBtnB112" onclick="toggleStudyRoom('unlocked', 'B112')">Unlocked</button>
+                        <div id="studyRoomB112PeopleInput" class="hidden">
+                            <label for="studyRoomB112People"><strong>Number of people in Study Room B112:</strong></label>
+                            <input type="number" id="studyRoomB112People" placeholder="0" value="0" min="0">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Additional Comments -->
                 <div class="section">
                     <h4><strong>Additional Comments</strong></h4>
-                    <textarea id="comments1stSouthHedden" placeholder="Enter any additional comments here..."></textarea>
-                </div>
-            </div>
-        </div>
-
-        <!-- Hedden Basement -->
-        <div class="section" id="hedden-basement">
-            <h2>Hedden: Basement</h2>
-
-            <!-- Ravine Room -->
-            <div class="wing-section">
-                <h3>Ravine Room</h3>
-                <div class="section">
-                    <label for="ravineRoomPeople"><strong>Number of people in Ravine Room:</strong></label>
-                    <input type="number" id="ravineRoomPeople" placeholder="0" value="0" min="0" oninput="toggleRavineRoomOptions()">
-                </div>
-                <div id="ravineRoomOptions" class="hidden">
-                    <label><input type="checkbox" value="watching tv"> Watching TV</label>
-                    <label><input type="checkbox" value="playing ping-pong"> Playing Ping-Pong</label>
-                    <label><input type="checkbox" value="playing pool"> Playing Pool</label>
-                    <label><input type="checkbox" value="hanging out"> Hanging Out</label>
-                    <label><input type="checkbox" value="in kitchen"> In Kitchen</label>
-                    <!-- Add any other options as needed -->
+                    <textarea id="basementComments" placeholder="Enter any additional comments here..."></textarea>
                 </div>
             </div>
 
-            <!-- Laundry Room -->
-            <div class="wing-section">
-                <h3>Laundry Room</h3>
-                <div class="section">
-                    <label for="laundryRoomPeople"><strong>Number of people in Laundry Room:</strong></label>
-                    <input type="number" id="laundryRoomPeople" placeholder="0" value="0" min="0">
-                </div>
-            </div>
+            <!-- Edwards 3rd Floor -->
+            <div class="floor-container" id="edwards-3rd-floor">
+                <h2>Edwards: 3rd Floor</h2>
+                <div class="wing-section">
+                    <div class="section">
+                        <p><strong>Is the hallway clear?</strong></p>
+                        <button id="clearBtn3rdNorthEdwards" onclick="toggleClear('clear', '3rdNorthEdwards')">Clear</button>
+                        <button id="notClearBtn3rdNorthEdwards" onclick="toggleClear('notClear', '3rdNorthEdwards')">Not Clear</button>
+                        <div id="hallwayPeopleInput3rdNorthEdwards" class="hidden">
+                            <label for="hallwayPeople3rdNorthEdwards"><strong>People in hallway:</strong></label>
+                            <input type="number" id="hallwayPeople3rdNorthEdwards" placeholder="Number" oninput="updateNoiseButton('3rdNorthEdwards')">
+                        </div>
+                    </div>
 
-            <!-- Study Room B111 -->
-            <div class="wing-section">
-                <h3>Study Room B111</h3>
-                <div class="section">
-                    <label><strong>Is the study room B111 locked or unlocked?</strong></label>
-                    <button id="lockedBtnB111" onclick="toggleStudyRoom('locked', 'B111')">Locked</button>
-                    <button id="unlockedBtnB111" onclick="toggleStudyRoom('unlocked', 'B111')">Unlocked</button>
-                    <div id="studyRoomB111PeopleInput" class="hidden">
-                        <label for="studyRoomB111People"><strong>Number of people in Study Room B111:</strong></label>
-                        <input type="number" id="studyRoomB111People" placeholder="0" value="0" min="0">
+                    <div class="section">
+                        <p><strong>Noise Level:</strong></p>
+                        <button id="quietBtn3rdNorthEdwards" onclick="toggleNoise('quiet', '3rdNorthEdwards')">Quiet</button>
+                        <button id="noisyBtn3rdNorthEdwards" class="hidden" onclick="toggleNoise('noisy', '3rdNorthEdwards')">Noisy</button>
+                        <button id="noiseComplaintBtn3rdNorthEdwards" onclick="toggleNoise('noiseComplaint', '3rdNorthEdwards')">Noise Complaint</button>
+                        <div id="noiseLevelInput3rdNorthEdwards" class="hidden">
+                            <label for="noiseLevel3rdNorthEdwards"><strong>Noise Level:</strong></label>
+                            <input type="range" id="noiseLevel3rdNorthEdwards" min="0" max="10" step="1" value="0">
+                        </div>
+                        <div id="noiseComplaintForm3rdNorthEdwards" class="hidden">
+                            <input type="text" id="complaintRoomNumber3rdNorthEdwards" placeholder="Room Number">
+                            <input type="text" id="complaintComments3rdNorthEdwards" placeholder="Additional Comments">
+                        </div>
+                    </div>
+
+                    <div class="section">
+                        <h4><strong>Additional Comments</strong></h4>
+                        <textarea id="comments3rdNorthEdwards" placeholder="Enter any additional comments here..."></textarea>
                     </div>
                 </div>
             </div>
 
-            <!-- Study Room B112 -->
-            <div class="wing-section">
-                <h3>Study Room B112</h3>
-                <div class="section">
-                    <label><strong>Is the study room B112 locked or unlocked?</strong></label>
-                    <button id="lockedBtnB112" onclick="toggleStudyRoom('locked', 'B112')">Locked</button>
-                    <button id="unlockedBtnB112" onclick="toggleStudyRoom('unlocked', 'B112')">Unlocked</button>
-                    <div id="studyRoomB112PeopleInput" class="hidden">
-                        <label for="studyRoomB112People"><strong>Number of people in Study Room B112:</strong></label>
-                        <input type="number" id="studyRoomB112People" placeholder="0" value="0" min="0">
+            <!-- Edwards 2nd Floor -->
+            <div class="floor-container" id="edwards-2nd-floor">
+                <h2>Edwards: 2nd Floor</h2>
+                <div class="wing-section">
+                    <div class="section">
+                        <p><strong>Is the hallway clear?</strong></p>
+                        <button id="clearBtn2ndNorthEdwards" onclick="toggleClear('clear', '2ndNorthEdwards')">Clear</button>
+                        <button id="notClearBtn2ndNorthEdwards" onclick="toggleClear('notClear', '2ndNorthEdwards')">Not Clear</button>
+                        <div id="hallwayPeopleInput2ndNorthEdwards" class="hidden">
+                            <label for="hallwayPeople2ndNorthEdwards"><strong>People in hallway:</strong></label>
+                            <input type="number" id="hallwayPeople2ndNorthEdwards" placeholder="Number" oninput="updateNoiseButton('2ndNorthEdwards')">
+                        </div>
+                    </div>
+
+                    <div class="section">
+                        <p><strong>Noise Level:</strong></p>
+                        <button id="quietBtn2ndNorthEdwards" onclick="toggleNoise('quiet', '2ndNorthEdwards')">Quiet</button>
+                        <button id="noisyBtn2ndNorthEdwards" class="hidden" onclick="toggleNoise('noisy', '2ndNorthEdwards')">Noisy</button>
+                        <button id="noiseComplaintBtn2ndNorthEdwards" onclick="toggleNoise('noiseComplaint', '2ndNorthEdwards')">Noise Complaint</button>
+                        <div id="noiseLevelInput2ndNorthEdwards" class="hidden">
+                            <label for="noiseLevel2ndNorthEdwards"><strong>Noise Level:</strong></label>
+                            <input type="range" id="noiseLevel2ndNorthEdwards" min="0" max="10" step="1" value="0">
+                        </div>
+                        <div id="noiseComplaintForm2ndNorthEdwards" class="hidden">
+                            <input type="text" id="complaintRoomNumber2ndNorthEdwards" placeholder="Room Number">
+                            <input type="text" id="complaintComments2ndNorthEdwards" placeholder="Additional Comments">
+                        </div>
+                    </div>
+
+                    <div class="room-section">
+                        <h4><strong>People in Kitchen 226:</strong></h4>
+                        <input type="number" id="commonRoomPeople2ndNorthEdwards" placeholder="0" value="0" min="0" oninput="showCommonRoomOptions('2ndNorthEdwards')">
+                        <div id="commonRoomOptions2ndNorthEdwards" class="hidden">
+                            <label><input type="checkbox" value="studying"> Studying</label>
+                            <label><input type="checkbox" value="on phone"> On Phone</label>
+                            <label><input type="checkbox" value="cooking"> Cooking</label>
+                            <label><input type="checkbox" value="filling water"> Filling Water</label>
+                            <label><input type="checkbox" value="hanging out"> Hanging Out</label>
+                        </div>
+                    </div>
+
+                    <div class="section">
+                        <h4><strong>Additional Comments</strong></h4>
+                        <textarea id="comments2ndNorthEdwards" placeholder="Enter any additional comments here..."></textarea>
                     </div>
                 </div>
             </div>
 
-            <!-- Additional Comments -->
-            <div class="section">
-                <h4><strong>Additional Comments</strong></h4>
-                <textarea id="basementComments" placeholder="Enter any additional comments here..."></textarea>
+            <!-- Edwards 1st Floor -->
+            <div class="floor-container" id="edwards-1st-floor">
+                <h2>Edwards: 1st Floor</h2>
+                <div class="wing-section">
+                    <div class="section">
+                        <p><strong>Is the hallway clear?</strong></p>
+                        <button id="clearBtn1stNorthEdwards" onclick="toggleClear('clear', '1stNorthEdwards')">Clear</button>
+                        <button id="notClearBtn1stNorthEdwards" onclick="toggleClear('notClear', '1stNorthEdwards')">Not Clear</button>
+                        <div id="hallwayPeopleInput1stNorthEdwards" class="hidden">
+                            <label for="hallwayPeople1stNorthEdwards"><strong>People in hallway:</strong></label>
+                            <input type="number" id="hallwayPeople1stNorthEdwards" placeholder="Number" oninput="updateNoiseButton('1stNorthEdwards')">
+                        </div>
+                    </div>
+
+                    <div class="section">
+                        <p><strong>Noise Level:</strong></p>
+                        <button id="quietBtn1stNorthEdwards" onclick="toggleNoise('quiet', '1stNorthEdwards')">Quiet</button>
+                        <button id="noisyBtn1stNorthEdwards" class="hidden" onclick="toggleNoise('noisy', '1stNorthEdwards')">Noisy</button>
+                        <button id="noiseComplaintBtn1stNorthEdwards" onclick="toggleNoise('noiseComplaint', '1stNorthEdwards')">Noise Complaint</button>
+                        <div id="noiseLevelInput1stNorthEdwards" class="hidden">
+                            <label for="noiseLevel1stNorthEdwards"><strong>Noise Level:</strong></label>
+                            <input type="range" id="noiseLevel1stNorthEdwards" min="0" max="10" step="1" value="0">
+                        </div>
+                        <div id="noiseComplaintForm1stNorthEdwards" class="hidden">
+                            <input type="text" id="complaintRoomNumber1stNorthEdwards" placeholder="Room Number">
+                            <input type="text" id="complaintComments1stNorthEdwards" placeholder="Additional Comments">
+                        </div>
+                    </div>
+
+                    <div class="room-section">
+                        <h4><strong>People in Common Room 108:</strong></h4>
+                        <input type="number" id="commonRoomPeople1stNorthEdwards108" placeholder="0" value="0" min="0" oninput="showCommonRoomOptions('1stNorthEdwards108')">
+                        <div id="commonRoomOptions1stNorthEdwards108" class="hidden">
+                            <label><input type="checkbox" value="studying"> Studying</label>
+                            <label><input type="checkbox" value="on phone"> On Phone</label>
+                            <label><input type="checkbox" value="filling water"> Filling Water</label>
+                            <label><input type="checkbox" value="hanging out"> Hanging Out</label>
+                        </div>
+                    </div>
+
+                    <div class="room-section">
+                        <h4><strong>People in Common Room 115:</strong></h4>
+                        <input type="number" id="commonRoomPeople1stNorthEdwards115" placeholder="0" value="0" min="0" oninput="showCommonRoomOptions('1stNorthEdwards115')">
+                        <div id="commonRoomOptions1stNorthEdwards115" class="hidden">
+                            <label><input type="checkbox" value="studying"> Studying</label>
+                            <label><input type="checkbox" value="on phone"> On Phone</label>
+                            <label><input type="checkbox" value="filling water"> Filling Water</label>
+                            <label><input type="checkbox" value="hanging out"> Hanging Out</label>
+                        </div>
+                    </div>
+
+                    <div class="section">
+                        <h4><strong>Additional Comments</strong></h4>
+                        <textarea id="comments1stNorthEdwards" placeholder="Enter any additional comments here..."></textarea>
+                    </div>
+                </div>
             </div>
-        </div>
 
-        <!-- Example for Edwards 3rd Floor -->
-        <div class="section" id="edwards-3rd-floor">
-            <h2>Edwards: 3rd Floor</h2>
-            <!-- North Wing -->
-            <div class="wing-section">
-                <div class="section">
-                    <p><strong>Is the hallway clear?</strong></p>
-                    <button id="clearBtn3rdNorthEdwards" onclick="toggleClear('clear', '3rdNorthEdwards')">Clear</button>
-                    <button id="notClearBtn3rdNorthEdwards" onclick="toggleClear('notClear', '3rdNorthEdwards')">Not Clear</button>
-                    <div id="hallwayPeopleInput3rdNorthEdwards" class="hidden">
-                        <label for="hallwayPeople3rdNorthEdwards"><strong>People in hallway:</strong></label>
-                        <input type="number" id="hallwayPeople3rdNorthEdwards" placeholder="Number" oninput="updateNoiseButton('3rdNorthEdwards')">
+            <!-- Edwards Basement -->
+            <div class="floor-container" id="edwards-basement">
+                <h2>Edwards: Basement</h2>
+                <!-- Study Room B105 -->
+                <div class="wing-section">
+                    <h3>Study Room B105</h3>
+                    <div class="section">
+                        <label><strong>Is the study room B105 locked or unlocked?</strong></label>
+                        <button id="lockedBtnB105" onclick="toggleStudyRoom('locked', 'B105')">Locked</button>
+                        <button id="unlockedBtnB105" onclick="toggleStudyRoom('unlocked', 'B105')">Unlocked</button>
+                        <div id="studyRoomB105PeopleInput" class="hidden">
+                            <label for="studyRoomB105People"><strong>Number of people in Study Room B105:</strong></label>
+                            <input type="number" id="studyRoomB105People" placeholder="0" value="0" min="0">
+                        </div>
                     </div>
                 </div>
 
-                <div class="section">
-                    <p><strong>Noise Level:</strong></p>
-                    <button id="quietBtn3rdNorthEdwards" onclick="toggleNoise('quiet', '3rdNorthEdwards')">Quiet</button>
-                    <button id="noisyBtn3rdNorthEdwards" class="hidden" onclick="toggleNoise('noisy', '3rdNorthEdwards')">Noisy</button>
-                    <button id="noiseComplaintBtn3rdNorthEdwards" onclick="toggleNoise('noiseComplaint', '3rdNorthEdwards')">Noise Complaint</button>
-                    <div id="noiseLevelInput3rdNorthEdwards" class="hidden">
-                        <label for="noiseLevel3rdNorthEdwards"><strong>Noise Level:</strong></label>
-                        <input type="range" id="noiseLevel3rdNorthEdwards" min="0" max="10" step="1" value="0">
-                    </div>
-                    <div id="noiseComplaintForm3rdNorthEdwards" class="hidden">
-                        <input type="text" id="complaintRoomNumber3rdNorthEdwards" placeholder="Room Number">
-                        <input type="text" id="complaintComments3rdNorthEdwards" placeholder="Additional Comments">
-                    </div>
-                </div>
-
-                <div class="section">
-                    <h4><strong>Additional Comments</strong></h4>
-                    <textarea id="comments3rdNorthEdwards" placeholder="Enter any additional comments here..."></textarea>
-                </div>
-            </div>
-        </div>
-
-        <div class="section" id="edwards-2nd-floor">
-            <h2>Edwards: 2nd Floor</h2>
-            <!-- North Wing -->
-            <div class="wing-section">
-                <div class="section">
-                    <p><strong>Is the hallway clear?</strong></p>
-                    <button id="clearBtn2ndNorthEdwards" onclick="toggleClear('clear', '2ndNorthEdwards')">Clear</button>
-                    <button id="notClearBtn2ndNorthEdwards" onclick="toggleClear('notClear', '2ndNorthEdwards')">Not Clear</button>
-                    <div id="hallwayPeopleInput2ndNorthEdwards" class="hidden">
-                        <label for="hallwayPeople2ndNorthEdwards"><strong>People in hallway:</strong></label>
-                        <input type="number" id="hallwayPeople2ndNorthEdwards" placeholder="Number" oninput="updateNoiseButton('2ndNorthEdwards')">
+                <!-- Study Room B106 -->
+                <div class="wing-section">
+                    <h3>Study Room B106</h3>
+                    <div class="section">
+                        <label><strong>Is the study room B106 locked or unlocked?</strong></label>
+                        <button id="lockedBtnB106" onclick="toggleStudyRoom('locked', 'B106')">Locked</button>
+                        <button id="unlockedBtnB106" onclick="toggleStudyRoom('unlocked', 'B106')">Unlocked</button>
+                        <div id="studyRoomB106PeopleInput" class="hidden">
+                            <label for="studyRoomB106People"><strong>Number of people in Study Room B106:</strong></label>
+                            <input type="number" id="studyRoomB106People" placeholder="0" value="0" min="0">
+                        </div>
                     </div>
                 </div>
 
-                <div class="section">
-                    <p><strong>Noise Level:</strong></p>
-                    <button id="quietBtn2ndNorthEdwards" onclick="toggleNoise('quiet', '2ndNorthEdwards')">Quiet</button>
-                    <button id="noisyBtn2ndNorthEdwards" class="hidden" onclick="toggleNoise('noisy', '2ndNorthEdwards')">Noisy</button>
-                    <button id="noiseComplaintBtn2ndNorthEdwards" onclick="toggleNoise('noiseComplaint', '2ndNorthEdwards')">Noise Complaint</button>
-                    <div id="noiseLevelInput2ndNorthEdwards" class="hidden">
-                        <label for="noiseLevel2ndNorthEdwards"><strong>Noise Level:</strong></label>
-                        <input type="range" id="noiseLevel2ndNorthEdwards" min="0" max="10" step="1" value="0">
-                    </div>
-                    <div id="noiseComplaintForm2ndNorthEdwards" class="hidden">
-                        <input type="text" id="complaintRoomNumber2ndNorthEdwards" placeholder="Room Number">
-                        <input type="text" id="complaintComments2ndNorthEdwards" placeholder="Additional Comments">
+                <!-- Study Room B102 -->
+                <div class="wing-section">
+                    <h3>Study Room B102</h3>
+                    <div class="section">
+                        <label><strong>Is the study room B102 locked or unlocked?</strong></label>
+                        <button id="lockedBtnB102" onclick="toggleStudyRoom('locked', 'B102')">Locked</button>
+                        <button id="unlockedBtnB102" onclick="toggleStudyRoom('unlocked', 'B102')">Unlocked</button>
+                        <div id="studyRoomB102PeopleInput" class="hidden">
+                            <label for="studyRoomB102People"><strong>Number of people in Study Room B102:</strong></label>
+                            <input type="number" id="studyRoomB102People" placeholder="0" value="0" min="0">
+                        </div>
                     </div>
                 </div>
 
-                <div class="room-section">
-                    <h4><strong>People in Kitchen 226:</strong></h4>
-                    <input type="number" id="commonRoomPeople2ndNorthEdwards" placeholder="0" value="0" min="0" oninput="showCommonRoomOptions('2ndNorthEdwards')">
-                    <div id="commonRoomOptions2ndNorthEdwards" class="hidden">
-                        <label><input type="checkbox" value="studying"> Studying</label>
-                        <label><input type="checkbox" value="on phone"> On Phone</label>
+                <!-- Games Room -->
+                <div class="wing-section">
+                    <h3>Games Room</h3>
+                    <div class="section">
+                        <label for="gamesRoomPeople"><strong>Number of people in Games Room:</strong></label>
+                        <input type="number" id="gamesRoomPeople" placeholder="0" value="0" min="0" oninput="toggleGamesRoomOptions()">
+                    </div>
+                    <div id="gamesRoomOptions" class="hidden">
+
+                        <label><input type="checkbox" value="watching tv"> Watching TV</label>
+                        <label><input type="checkbox" value="playing ping-pong"> Playing Ping-Pong</label>
+                        <label><input type="checkbox" value="playing pool"> Playing Pool</label>
+                        <label><input type="checkbox" value="hanging out"> Hanging Out</label>
+
+                        <!-- Add any other options as needed -->
+                    </div>
+                </div>
+
+                <!-- Kitchen -->
+                <div class="wing-section">
+                    <h3>Kitchen</h3>
+                    <div class="section">
+                        <label for="kitchenPeople"><strong>Number of people in Kitchen:</strong></label>
+                        <input type="number" id="kitchenPeople" placeholder="0" value="0" min="0" oninput="toggleKitchenOptions()">
+                    </div>
+                    <div id="kitchenOptions" class="hidden">
                         <label><input type="checkbox" value="cooking"> Cooking</label>
                         <label><input type="checkbox" value="filling water"> Filling Water</label>
-                        <label><input type="checkbox" value="hanging out"> Hanging Out</label>
+                        <label><input type="checkbox" value="socializing"> Socializing</label>
+                        <label><input type="checkbox" value="quiet"> Quiet</label>
                     </div>
                 </div>
 
+                <!-- Kitchenette -->
+                <div class="wing-section">
+                    <h3>Kitchenette</h3>
+                    <div class="section">
+                        <label for="kitchenettePeople"><strong>Number of people in Kitchenette:</strong></label>
+                        <input type="number" id="kitchenettePeople" placeholder="0" value="0" min="0" oninput="toggleKitchenetteOptions()">
+                    </div>
+                    <div id="kitchenetteOptions" class="hidden">
+                        <label><input type="checkbox" value="cooking"> Cooking</label>
+                        <label><input type="checkbox" value="filling water"> Filling Water</label>
+                        <label><input type="checkbox" value="socializing"> Socializing</label>
+                        <label><input type="checkbox" value="quiet"> Quiet</label>
+                    </div>
+                </div>
+
+                <!-- Laundry Room -->
+                <div class="wing-section">
+                    <h3>Laundry Room</h3>
+                    <div class="section">
+                        <label for="laundryRoomPeopleEdwards"><strong>Number of people in Laundry Room:</strong></label>
+                        <input type="number" id="laundryRoomPeopleEdwards" placeholder="0" value="0" min="0">
+                    </div>
+                </div>
+
+                <!-- Additional Comments -->
                 <div class="section">
                     <h4><strong>Additional Comments</strong></h4>
-                    <textarea id="comments2ndNorthEdwards" placeholder="Enter any additional comments here..."></textarea>
+                    <textarea id="basementCommentsEdwards" placeholder="Enter any additional comments here..."></textarea>
                 </div>
-            </div>
-        </div>
-
-        <div class="section" id="edwards-1st-floor">
-            <h2>Edwards: 1st Floor</h2>
-            <!-- North Wing -->
-            <div class="wing-section">
-                <div class="section">
-                    <p><strong>Is the hallway clear?</strong></p>
-                    <button id="clearBtn1stNorthEdwards" onclick="toggleClear('clear', '1stNorthEdwards')">Clear</button>
-                    <button id="notClearBtn1stNorthEdwards" onclick="toggleClear('notClear', '1stNorthEdwards')">Not Clear</button>
-                    <div id="hallwayPeopleInput1stNorthEdwards" class="hidden">
-                        <label for="hallwayPeople1stNorthEdwards"><strong>People in hallway:</strong></label>
-                        <input type="number" id="hallwayPeople1stNorthEdwards" placeholder="Number" oninput="updateNoiseButton('1stNorthEdwards')">
-                    </div>
-                </div>
-
-                <div class="section">
-                    <p><strong>Noise Level:</strong></p>
-                    <button id="quietBtn1stNorthEdwards" onclick="toggleNoise('quiet', '1stNorthEdwards')">Quiet</button>
-                    <button id="noisyBtn1stNorthEdwards" class="hidden" onclick="toggleNoise('noisy', '1stNorthEdwards')">Noisy</button>
-                    <button id="noiseComplaintBtn1stNorthEdwards" onclick="toggleNoise('noiseComplaint', '1stNorthEdwards')">Noise Complaint</button>
-                    <div id="noiseLevelInput1stNorthEdwards" class="hidden">
-                        <label for="noiseLevel1stNorthEdwards"><strong>Noise Level:</strong></label>
-                        <input type="range" id="noiseLevel1stNorthEdwards" min="0" max="10" step="1" value="0">
-                    </div>
-                    <div id="noiseComplaintForm1stNorthEdwards" class="hidden">
-                        <input type="text" id="complaintRoomNumber1stNorthEdwards" placeholder="Room Number">
-                        <input type="text" id="complaintComments1stNorthEdwards" placeholder="Additional Comments">
-                    </div>
-                </div>
-
-                <div class="room-section">
-                    <h4><strong>People in Common Room 108:</strong></h4>
-                    <input type="number" id="commonRoomPeople1stNorthEdwards108" placeholder="0" value="0" min="0" oninput="showCommonRoomOptions('1stNorthEdwards108')">
-                    <div id="commonRoomOptions1stNorthEdwards108" class="hidden">
-                        <label><input type="checkbox" value="studying"> Studying</label>
-                        <label><input type="checkbox" value="on phone"> On Phone</label>
-                        <label><input type="checkbox" value="filling water"> Filling Water</label>
-                        <label><input type="checkbox" value="hanging out"> Hanging Out</label>
-                    </div>
-                </div>
-
-                <div class="room-section">
-                    <h4><strong>People in Common Room 115:</strong></h4>
-                    <input type="number" id="commonRoomPeople1stNorthEdwards115" placeholder="0" value="0" min="0" oninput="showCommonRoomOptions('1stNorthEdwards115')">
-                    <div id="commonRoomOptions1stNorthEdwards115" class="hidden">
-                        <label><input type="checkbox" value="studying"> Studying</label>
-                        <label><input type="checkbox" value="on phone"> On Phone</label>
-                        <label><input type="checkbox" value="filling water"> Filling Water</label>
-                        <label><input type="checkbox" value="hanging out"> Hanging Out</label>
-                    </div>
-                </div>
-
-                <div class="section">
-                    <h4><strong>Additional Comments</strong></h4>
-                    <textarea id="comments1stNorthEdwards" placeholder="Enter any additional comments here..."></textarea>
-                </div>
-            </div>
-        </div>
-
-        <!-- Edwards Basement -->
-        <div class="section" id="edwards-basement">
-            <h2>Edwards: Basement</h2>
-
-            <!-- Study Room B105 -->
-            <div class="wing-section">
-                <h3>Study Room B105</h3>
-                <div class="section">
-                    <label><strong>Is the study room B105 locked or unlocked?</strong></label>
-                    <button id="lockedBtnB105" onclick="toggleStudyRoom('locked', 'B105')">Locked</button>
-                    <button id="unlockedBtnB105" onclick="toggleStudyRoom('unlocked', 'B105')">Unlocked</button>
-                    <div id="studyRoomB105PeopleInput" class="hidden">
-                        <label for="studyRoomB105People"><strong>Number of people in Study Room B105:</strong></label>
-                        <input type="number" id="studyRoomB105People" placeholder="0" value="0" min="0">
-                    </div>
-                </div>
-            </div>
-
-            <!-- Study Room B106 -->
-            <div class="wing-section">
-                <h3>Study Room B106</h3>
-                <div class="section">
-                    <label><strong>Is the study room B106 locked or unlocked?</strong></label>
-                    <button id="lockedBtnB106" onclick="toggleStudyRoom('locked', 'B106')">Locked</button>
-                    <button id="unlockedBtnB106" onclick="toggleStudyRoom('unlocked', 'B106')">Unlocked</button>
-                    <div id="studyRoomB106PeopleInput" class="hidden">
-                        <label for="studyRoomB106People"><strong>Number of people in Study Room B106:</strong></label>
-                        <input type="number" id="studyRoomB106People" placeholder="0" value="0" min="0">
-                    </div>
-                </div>
-            </div>
-
-            <!-- Study Room B102 -->
-            <div class="wing-section">
-                <h3>Study Room B102</h3>
-                <div class="section">
-                    <label><strong>Is the study room B102 locked or unlocked?</strong></label>
-                    <button id="lockedBtnB102" onclick="toggleStudyRoom('locked', 'B102')">Locked</button>
-                    <button id="unlockedBtnB102" onclick="toggleStudyRoom('unlocked', 'B102')">Unlocked</button>
-                    <div id="studyRoomB102PeopleInput" class="hidden">
-                        <label for="studyRoomB102People"><strong>Number of people in Study Room B102:</strong></label>
-                        <input type="number" id="studyRoomB102People" placeholder="0" value="0" min="0">
-                    </div>
-                </div>
-            </div>
-
-            <!-- Games Room -->
-            <div class="wing-section">
-                <h3>Games Room</h3>
-                <div class="section">
-                    <label for="gamesRoomPeople"><strong>Number of people in Games Room:</strong></label>
-                    <input type="number" id="gamesRoomPeople" placeholder="0" value="0" min="0" oninput="toggleGamesRoomOptions()">
-                </div>
-                <div id="gamesRoomOptions" class="hidden">
-
-                    <label><input type="checkbox" value="watching tv"> Watching TV</label>
-                    <label><input type="checkbox" value="playing ping-pong"> Playing Ping-Pong</label>
-                    <label><input type="checkbox" value="playing pool"> Playing Pool</label>
-                    <label><input type="checkbox" value="hanging out"> Hanging Out</label>
-
-                    <!-- Add any other options as needed -->
-                </div>
-            </div>
-
-            <!-- Kitchen -->
-            <div class="wing-section">
-                <h3>Kitchen</h3>
-                <div class="section">
-                    <label for="kitchenPeople"><strong>Number of people in Kitchen:</strong></label>
-                    <input type="number" id="kitchenPeople" placeholder="0" value="0" min="0" oninput="toggleKitchenOptions()">
-                </div>
-                <div id="kitchenOptions" class="hidden">
-                    <label><input type="checkbox" value="cooking"> Cooking</label>
-                    <label><input type="checkbox" value="filling water"> Filling Water</label>
-                    <label><input type="checkbox" value="socializing"> Socializing</label>
-                    <label><input type="checkbox" value="quiet"> Quiet</label>
-                </div>
-            </div>
-
-            <!-- Kitchenette -->
-            <div class="wing-section">
-                <h3>Kitchenette</h3>
-                <div class="section">
-                    <label for="kitchenettePeople"><strong>Number of people in Kitchenette:</strong></label>
-                    <input type="number" id="kitchenettePeople" placeholder="0" value="0" min="0" oninput="toggleKitchenetteOptions()">
-                </div>
-                <div id="kitchenetteOptions" class="hidden">
-                    <label><input type="checkbox" value="cooking"> Cooking</label>
-                    <label><input type="checkbox" value="filling water"> Filling Water</label>
-                    <label><input type="checkbox" value="socializing"> Socializing</label>
-                    <label><input type="checkbox" value="quiet"> Quiet</label>
-                </div>
-            </div>
-
-            <!-- Laundry Room -->
-            <div class="wing-section">
-                <h3>Laundry Room</h3>
-                <div class="section">
-                    <label for="laundryRoomPeopleEdwards"><strong>Number of people in Laundry Room:</strong></label>
-                    <input type="number" id="laundryRoomPeopleEdwards" placeholder="0" value="0" min="0">
-                </div>
-            </div>
-
-            <!-- Additional Comments -->
-            <div class="section">
-                <h4><strong>Additional Comments</strong></h4>
-                <textarea id="basementCommentsEdwards" placeholder="Enter any additional comments here..."></textarea>
             </div>
         </div>
     </div>
-
-    <!-- Footer Section -->
-    <footer class="footer hidden" id="footerSection">
-        <button id="stopSweepBtn" onclick="stopSweep()" class="red-button">End Sweep</button>
-        <button id="copyReportBtn" onclick="copyReport()" class="hidden primary-button">Copy to Clipboard</button>
-    </footer>
-
-    <script>
-        // JavaScript for header behavior
-        let lastScrollTop = 0;
-        const header = document.getElementById('mainHeader');
-        const menuIcon = document.getElementById('menuIcon');
-
-        window.addEventListener('scroll', function() {
-            let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-            if (scrollTop > lastScrollTop) {
-                // Scroll down - hide header
-                header.classList.add('hidden');
-            } else {
-                // Scroll up - show header
-                header.classList.remove('hidden');
-            }
-            lastScrollTop = scrollTop;
-        });
-
-        function toggleMenu() {
-            header.classList.toggle('show-menu');
-        }
-    </script>
-
     <script src="script.js"></script>
 </body>
 </html>
