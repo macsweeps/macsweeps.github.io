@@ -3,31 +3,46 @@ let startTime;
 let stopTime;
 let duration;
 
-// Ensure the DOM is fully loaded
 document.addEventListener('DOMContentLoaded', () => {
     const mainContainer = document.getElementById('main-container');
+    const offsetPadding = 20; // Additional padding to ensure content is fully in view
     
-    // Function to scroll to the specific floor
+    // Function to check if the element's bottom is fully visible
+    function isBottomFullyVisible(element) {
+        const rect = element.getBoundingClientRect();
+        const viewportHeight = window.innerHeight;
+        
+        // Check if the element's bottom is fully visible in the viewport
+        return rect.bottom <= viewportHeight;
+    }
+    
+    // Function to scroll to a specific floor
     function scrollToFloor(floorId) {
         const floorElement = document.getElementById(floorId);
 
-        // Check if the element exists
         if (floorElement) {
-            const scrollPosition = floorElement.offsetTop - mainContainer.offsetTop;
+            const elementTop = floorElement.getBoundingClientRect().top + window.pageYOffset;
+            const elementBottom = elementTop + floorElement.offsetHeight;
+            const containerScrollPosition = mainContainer.scrollTop + mainContainer.offsetTop;
+            const containerHeight = mainContainer.offsetHeight;
 
-            mainContainer.scrollTo({
-                top: scrollPosition,
-                behavior: 'smooth' // Smooth scrolling
-            });
+            // Check if the bottom of the floor section is fully visible
+            if (!isBottomFullyVisible(floorElement)) {
+                // If not, scroll to ensure the bottom is fully visible
+                mainContainer.scrollTo({
+                    top: elementTop - mainContainer.offsetTop - offsetPadding,
+                    behavior: 'smooth' // Smooth scroll to make sure it's visible
+                });
+            }
         } else {
             console.error(`Element with ID ${floorId} not found`);
         }
     }
 
-    // Add the scrollToFloor function to window object so it's accessible in the HTML
+    // Expose the scrollToFloor function to the global scope for use in the HTML
     window.scrollToFloor = scrollToFloor;
 
-    // Make sure buttons are clickable
+    // Make sure buttons are clickable and properly set
     const sidebarButtons = document.querySelectorAll('.sidebar button');
 
     sidebarButtons.forEach(button => {
@@ -35,43 +50,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const targetFloorId = event.target.getAttribute('data-floor-id');
             scrollToFloor(targetFloorId);
         });
-    });
-    // Adjust scrolling sensitivity
-    mainContainer.addEventListener('scroll', () => {
-        if (isScrolling) return;
-
-        const scrollPosition = mainContainer.scrollTop;
-        const containerHeight = mainContainer.clientHeight;
-
-        let currentFloor = null;
-        floors.forEach((floor, index) => {
-            const floorTop = floor.offsetTop - mainContainer.offsetTop;
-            const floorHeight = floor.clientHeight;
-
-            if (scrollPosition >= floorTop && scrollPosition < floorTop + floorHeight) {
-                currentFloor = index;
-            }
-        });
-
-        if (currentFloor !== null) {
-            const currentFloorElement = floors[currentFloor];
-            const floorTop = currentFloorElement.offsetTop - mainContainer.offsetTop;
-            const floorHeight = currentFloorElement.clientHeight;
-            const scrolledPercentage = (scrollPosition - floorTop) / floorHeight;
-
-            // Scroll to the next or previous floor only when the scroll exceeds 50%
-            if (scrolledPercentage >= 0.5 && currentFloor < floors.length - 1) {
-                isScrolling = true;
-                scrollToFloor(floors[currentFloor + 1].id);
-            } else if (scrolledPercentage < 0.5 && currentFloor > 0) {
-                isScrolling = true;
-                scrollToFloor(floors[currentFloor - 1].id);
-            }
-
-            setTimeout(() => {
-                isScrolling = false;
-            }, 500);  // Adjust this delay to control the sensitivity of scroll response
-        }
     });
 });
 

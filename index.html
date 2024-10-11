@@ -523,6 +523,122 @@
                     </div>
                 </div>
             </div>
+            <!-- Edwards Basement -->
+            <div class="floor-container" id="edwards-basement">
+                <h2>Edwards: Basement</h2>
+                <!-- Study Room B105 -->
+                <div class="wing-section">
+                    <h3>Study Room B105</h3>
+                    <div class="section">
+                        <label><strong>Is the study room B105 locked or unlocked?</strong></label>
+                        <button id="lockedBtnB105" onclick="toggleStudyRoom('locked', 'B105')">Locked</button>
+                        <button id="unlockedBtnB105" onclick="toggleStudyRoom('unlocked', 'B105')">Unlocked</button>
+                        <div id="studyRoomB105PeopleInput" class="hidden">
+                            <label for="studyRoomB105People"><strong>Number of people in Study Room B105:</strong></label>
+                            <input type="number" id="studyRoomB105People" placeholder="0" value="0" min="0">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Study Room B106 -->
+                <div class="wing-section">
+                    <h3>Study Room B106</h3>
+                    <div class="section">
+                        <label><strong>Is the study room B106 locked or unlocked?</strong></label>
+                        <button id="lockedBtnB106" onclick="toggleStudyRoom('locked', 'B106')">Locked</button>
+                        <button id="unlockedBtnB106" onclick="toggleStudyRoom('unlocked', 'B106')">Unlocked</button>
+                        <div id="studyRoomB106PeopleInput" class="hidden">
+                            <label for="studyRoomB106People"><strong>Number of people in Study Room B106:</strong></label>
+                            <input type="number" id="studyRoomB106People" placeholder="0" value="0" min="0">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Study Room B102 -->
+                <div class="wing-section">
+                    <h3>Study Room B102</h3>
+                    <div class="section">
+                        <label><strong>Is the study room B102 locked or unlocked?</strong></label>
+                        <button id="lockedBtnB102" onclick="toggleStudyRoom('locked', 'B102')">Locked</button>
+                        <button id="unlockedBtnB102" onclick="toggleStudyRoom('unlocked', 'B102')">Unlocked</button>
+                        <div id="studyRoomB102PeopleInput" class="hidden">
+                            <label for="studyRoomB102People"><strong>Number of people in Study Room B102:</strong></label>
+                            <input type="number" id="studyRoomB102People" placeholder="0" value="0" min="0">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Games Room -->
+                <div class="wing-section">
+                    <h3>Games Room</h3>
+                    <div class="section">
+                        <label for="gamesRoomPeople"><strong>Number of people in Games Room:</strong></label>
+                        <input type="number" id="gamesRoomPeople" placeholder="0" value="0" min="0" oninput="toggleGamesRoomOptions()">
+                    </div>
+                    <div id="gamesRoomOptions" class="hidden">
+
+                        <label><input type="checkbox" value="watching tv"> Watching TV</label>
+                        <label><input type="checkbox" value="playing ping-pong"> Playing Ping-Pong</label>
+                        <label><input type="checkbox" value="playing pool"> Playing Pool</label>
+                        <label><input type="checkbox" value="hanging out"> Hanging Out</label>
+
+                        <!-- Add any other options as needed -->
+                    </div>
+                </div>
+
+                <!-- Kitchen -->
+                <div class="wing-section">
+                    <h3>Kitchen</h3>
+                    <div class="section">
+                        <label for="kitchenPeople"><strong>Number of people in Kitchen:</strong></label>
+                        <input type="number" id="kitchenPeople" placeholder="0" value="0" min="0" oninput="toggleKitchenOptions()">
+                    </div>
+                    <div id="kitchenOptions" class="hidden">
+                        <label><input type="checkbox" value="cooking"> Cooking</label>
+                        <label><input type="checkbox" value="filling water"> Filling Water</label>
+                        <label><input type="checkbox" value="socializing"> Socializing</label>
+                        <label><input type="checkbox" value="quiet"> Quiet</label>
+                    </div>
+                </div>
+
+                <!-- Kitchenette -->
+                <div class="wing-section">
+                    <h3>Kitchenette</h3>
+                    <div class="section">
+                        <label for="kitchenettePeople"><strong>Number of people in Kitchenette:</strong></label>
+                        <input type="number" id="kitchenettePeople" placeholder="0" value="0" min="0" oninput="toggleKitchenetteOptions()">
+                    </div>
+                    <div id="kitchenetteOptions" class="hidden">
+                        <label><input type="checkbox" value="cooking"> Cooking</label>
+                        <label><input type="checkbox" value="filling water"> Filling Water</label>
+                        <label><input type="checkbox" value="socializing"> Socializing</label>
+                        <label><input type="checkbox" value="quiet"> Quiet</label>
+                    </div>
+                </div>
+
+                <!-- Laundry Room -->
+                <div class="wing-section">
+                    <h3>Laundry Room</h3>
+                    <div class="section">
+                        <label for="laundryRoomPeopleEdwards"><strong>Number of people in Laundry Room:</strong></label>
+                        <input type="number" id="laundryRoomPeopleEdwards" placeholder="0" value="0" min="0">
+                    </div>
+                </div>
+
+                <!-- Additional Comments -->
+                <div class="section">
+                    <h4><strong>Additional Comments</strong></h4>
+                    <textarea id="basementCommentsEdwards" placeholder="Enter any additional comments here..."></textarea>
+                </div>
+                <div>
+
+                    <h4></h4>
+                    <h4></h4>
+
+
+
+                </div>
+            </div>
 
             <!-- Edwards Basement -->
             <div class="floor-container" id="edwards-basement">
