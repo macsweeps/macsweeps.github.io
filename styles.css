@@ -56,11 +56,14 @@ body {
 
 /* Sidebar Navigation */
 .sidebar {
-    width: 5%; /* 1/5 of the screen width */
-    background-color: #2196f3;
-    overflow-y: auto;
-    padding-top: 10px;
-    box-sizing: border-box;
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 20%; /* Adjust width according to your design */
+    overflow-y: auto; /* Allow scrolling if the content overflows */
+    background-color: #2196f3; /* Your sidebar background color */
+    z-index: 1000; /* Ensure it stays above other content */
 }
 
 .sidebar ul {
