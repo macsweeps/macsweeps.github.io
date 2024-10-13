@@ -121,8 +121,7 @@ body {
 }
 
 h2 {
-    margin-top: 20px; /* Adjust this value */
-    padding-top: 70px; /* Additional padding to prevent cut-off */
+    padding-top: 40px; /* Additional padding to prevent cut-off */
 }
 
 /* Main Content Area */
@@ -137,8 +136,6 @@ h2 {
     scroll-snap-align: start;
     min-height: 100vh; /* Ensure each floor takes full viewport height */
     overflow-y: auto;
-    margin-top: 20px; /* Adjust this value */
-    padding-top: 20px; /* Additional padding to prevent cut-off */
     padding: 20px;
     box-sizing: border-box;
     background-color: #ffffff;
@@ -148,7 +145,7 @@ h2 {
 .floor-container h2 {
     text-align: center;
     color: #4caf50;
-    margin-top: 0;
+    padding-top: 50px;
 }
 
 /* Form Elements */
