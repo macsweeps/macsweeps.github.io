@@ -126,10 +126,11 @@ h2 {
 
 /* Main Content Area */
 .main-container {
-    overflow-y: scroll; /* Enable vertical scrolling */
+    overflow-y: auto; /* Enable vertical scrolling */
     scroll-behavior: smooth;
     scroll-snap-type: y mandatory;
     box-sizing: border-box;
+    height: calc(100vh - 60px)
 }
 
 .floor-container {
